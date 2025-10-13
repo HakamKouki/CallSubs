@@ -1,7 +1,6 @@
-import type { NextConfig } from "next";
+module.exports = {
+  // Allow cross-origin requests from the tunnel
+  allowedDevOrigins: ["http://localhost:3000", "https://25cac8962404da.lhr.life"],
 
-const nextConfig: NextConfig = {
-  /* config options here */
+  // Other Next.js config options...
 };
-
-export default nextConfig;
