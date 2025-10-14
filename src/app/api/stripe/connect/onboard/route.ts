@@ -41,7 +41,6 @@ export async function POST(request: NextRequest) {
     if (!accountId) {
       const account = await stripe.accounts.create({
         type: 'express',
-        country: 'US', // You can make this dynamic based on streamer location
         email: session.user.email || undefined,
         capabilities: {
           card_payments: { requested: true },
