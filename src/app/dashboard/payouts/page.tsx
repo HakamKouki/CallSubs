@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { 
   DollarSign, 
   ExternalLink, 
@@ -24,7 +24,7 @@ interface StripeStatus {
   accountId?: string;
 }
 
-export default function PayoutsPage() {
+function PayoutsPageContent() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -345,5 +345,20 @@ export default function PayoutsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PayoutsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <PayoutsPageContent />
+    </Suspense>
   );
 }
