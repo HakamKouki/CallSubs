@@ -35,32 +35,24 @@ export const authOptions: NextAuthOptions = {
           if (existingUser.rows.length === 0) {
             // Create new user
             await pool.query(
-              `INSERT INTO users (twitch_id, username, email, display_name, profile_image_url, access_token, refresh_token, role)
-               VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+              `INSERT INTO users (twitch_id, username, email, display_name, profile_image_url)
+               VALUES ($1, $2, $3, $4, $5)`,
               [
                 account.providerAccountId,
                 twitchProfile.preferred_username || user.name,
                 user.email,
                 twitchProfile.display_name || user.name,
-                twitchProfile.profile_image_url || user.image,
-                account.access_token,
-                account.refresh_token,
-                'streamer'
+                twitchProfile.profile_image_url || user.image
               ]
             );
           } else {
-            // Update existing user tokens
+            // Update existing user
             await pool.query(
               `UPDATE users SET 
-                access_token = $1, 
-                refresh_token = $2,
-                profile_image_url = $3,
-                display_name = $4,
-                updated_at = NOW()
-               WHERE twitch_id = $5`,
+                profile_image_url = $1,
+                display_name = $2
+               WHERE twitch_id = $3`,
               [
-                account.access_token,
-                account.refresh_token,
                 twitchProfile.profile_image_url || user.image,
                 twitchProfile.display_name || user.name,
                 account.providerAccountId
@@ -78,6 +70,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (token) {
         session.user = {
+          id: (token.sub as string) || '',
           name: (token.name as string) || (token.display_name as string) || '',
           email: (token.email as string) || '',
           image: (token.picture as string) || (token.profile_image_url as string) || ''
