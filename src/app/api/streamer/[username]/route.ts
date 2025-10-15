@@ -6,7 +6,7 @@ export async function GET(
   { params }: { params: Promise<{ username: string }> }
 ) {
   try {
-    const { username } = await params; // ADD await here
+    const { username } = await params;
 
     const userResult = await pool.query(
       'SELECT id, username, display_name, profile_image_url FROM users WHERE username = $1 OR display_name = $1',
@@ -20,7 +20,7 @@ export async function GET(
     const user = userResult.rows[0];
 
     const streamerResult = await pool.query(
-      'SELECT call_price, call_duration, is_accepting_calls, min_sub_tier FROM streamers WHERE user_id = $1',
+      'SELECT call_price, call_duration, is_accepting_calls, min_sub_tier, call_rules, require_rules_agreement FROM streamers WHERE user_id = $1',
       [user.id]
     );
 
@@ -38,6 +38,8 @@ export async function GET(
       callDuration: streamer.call_duration,
       isAcceptingCalls: streamer.is_accepting_calls,
       minSubTier: streamer.min_sub_tier,
+      callRules: streamer.call_rules,
+      requireRulesAgreement: streamer.require_rules_agreement,
       isLive: false
     });
   } catch (error) {
