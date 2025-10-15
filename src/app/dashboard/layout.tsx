@@ -7,7 +7,8 @@ import {
   LayoutDashboard, 
   Settings, 
   DollarSign, 
-  BarChart3, 
+  BarChart3,
+  Calendar, 
   LogOut,
   Menu,
   X,
@@ -21,6 +22,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
     { id: 'analytics', label: 'Analytics', icon: BarChart3, path: '/dashboard/analytics' },
+    { id: 'history', label: 'Call History', icon: Calendar, path: '/dashboard/history' },
     { id: 'payouts', label: 'Payouts', icon: DollarSign, path: '/dashboard/payouts' },
     { id: 'settings', label: 'Settings', icon: Settings, path: '/dashboard/settings' },
   ];
