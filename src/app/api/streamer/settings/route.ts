@@ -25,7 +25,25 @@ export async function GET(request: NextRequest) {
     const userId = userResult.rows[0].id;
 
     let streamerResult = await pool.query(
-      'SELECT * FROM streamers WHERE user_id = $1',
+      `SELECT 
+        id,
+        user_id,
+        call_price,
+        call_duration,
+        min_sub_tier,
+        is_accepting_calls,
+        total_earned,
+        calls_completed,
+        stripe_account_id,
+        stripe_onboarding_complete,
+        stripe_charges_enabled,
+        stripe_payouts_enabled,
+        call_rules,
+        require_rules_agreement,
+        created_at,
+        updated_at
+       FROM streamers 
+       WHERE user_id = $1`,
       [userId]
     );
 
