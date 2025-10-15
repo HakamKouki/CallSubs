@@ -100,22 +100,37 @@ export default function HomePage() {
       {/* Nav */}
       <header className="sticky top-0 z-20 border-b border-black/5 bg-white/60 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+          {/* Logo */}
           <a href="#" className="flex items-center gap-2">
-            <div className="grid h-8 w-8 place-items-center rounded-xl bg-black text-white shadow-sm">
-              <span className="text-xs font-bold">CS</span>
-            </div>
-            <span className="text-lg font-semibold">CallSubs</span>
+            <img
+              src="/logo.png" // 👈 replace with the path to your Viking logo file
+              alt="CallSubs Logo"
+              className="h-8 w-8"
+            />
+            <span className="text-lg font-semibold tracking-tight">CallSubs</span>
           </a>
+
+          {/* Nav links */}
           <nav className="hidden items-center gap-6 md:flex">
-            <a href="#features" className="text-sm text-neutral-700 hover:text-black">Features</a>
-            <a href="#how" className="text-sm text-neutral-700 hover:text-black">How it works</a>
-            <a href="#pricing" className="text-sm text-neutral-700 hover:text-black">Pricing</a>
+            <a href="#features" className="text-sm text-neutral-700 hover:text-black transition">
+              Features
+            </a>
+            <a href="#how" className="text-sm text-neutral-700 hover:text-black transition">
+              How it works
+            </a>
+            <a href="#pricing" className="text-sm text-neutral-700 hover:text-black transition">
+              Pricing
+            </a>
           </nav>
+
+          {/* Auth / CTA */}
           <div className="flex items-center gap-2">
-            <Button variant="ghost" href="#pricing">Pricing</Button>
-            <Button onClick={() => signIn("twitch", { callbackUrl: '/dashboard' })}>
+            <Button variant="ghost" href="#pricing">
+              Pricing
+            </Button>
+            <Button onClick={() => signIn("twitch", { callbackUrl: '/dashboard' })} className="gap-2">
               <IconTwitch />
-              <span className="ml-2">Sign in with Twitch</span>
+              <span>Sign in with Twitch</span>
             </Button>
           </div>
         </div>
