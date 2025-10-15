@@ -2,8 +2,6 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import {
   DollarSign,
@@ -16,7 +14,6 @@ import {
   Award,
   BarChart3,
   ArrowUpRight,
-  ArrowDownRight
 } from 'lucide-react';
 
 interface AnalyticsData {
@@ -45,22 +42,12 @@ interface AnalyticsData {
 }
 
 export default function AnalyticsPage() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/auth/signin');
-    }
-  }, [status, router]);
-
-  useEffect(() => {
-    if (status === 'authenticated') {
-      fetchAnalytics();
-    }
-  }, [status]);
+    fetchAnalytics();
+  }, []);
 
   const fetchAnalytics = async () => {
     try {
@@ -78,9 +65,9 @@ export default function AnalyticsPage() {
     }
   };
 
-  if (status === 'loading' || loading) {
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-full flex items-center justify-center p-8">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading analytics...</p>
@@ -89,7 +76,7 @@ export default function AnalyticsPage() {
     );
   }
 
-  if (!session || !analytics) {
+  if (!analytics) {
     return null;
   }
 
@@ -110,14 +97,8 @@ export default function AnalyticsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 lg:p-8">
+    <div className="p-4 lg:p-8">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Analytics</h1>
-          <p className="text-gray-600">Track your performance and earnings</p>
-        </div>
-
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Total Earned */}
@@ -249,7 +230,7 @@ export default function AnalyticsPage() {
                   <div
                     className="bg-yellow-500 h-2 rounded-full"
                     style={{
-                      width: `${(analytics.callsByTier.tier3 / analytics.callsCompleted) * 100}%`
+                      width: analytics.callsCompleted > 0 ? `${(analytics.callsByTier.tier3 / analytics.callsCompleted) * 100}%` : '0%'
                     }}
                   />
                 </div>
@@ -270,7 +251,7 @@ export default function AnalyticsPage() {
                   <div
                     className="bg-purple-500 h-2 rounded-full"
                     style={{
-                      width: `${(analytics.callsByTier.tier2 / analytics.callsCompleted) * 100}%`
+                      width: analytics.callsCompleted > 0 ? `${(analytics.callsByTier.tier2 / analytics.callsCompleted) * 100}%` : '0%'
                     }}
                   />
                 </div>
@@ -291,7 +272,7 @@ export default function AnalyticsPage() {
                   <div
                     className="bg-blue-500 h-2 rounded-full"
                     style={{
-                      width: `${(analytics.callsByTier.tier1 / analytics.callsCompleted) * 100}%`
+                      width: analytics.callsCompleted > 0 ? `${(analytics.callsByTier.tier1 / analytics.callsCompleted) * 100}%` : '0%'
                     }}
                   />
                 </div>
