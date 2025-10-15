@@ -8,7 +8,8 @@ import {
   Settings, 
   DollarSign, 
   BarChart3,
-  Calendar, 
+  Calendar,
+  HelpCircle, 
   LogOut,
   Menu,
   X,
@@ -25,6 +26,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
     { id: 'history', label: 'Call History', icon: Calendar, path: '/dashboard/history' },
     { id: 'payouts', label: 'Payouts', icon: DollarSign, path: '/dashboard/payouts' },
     { id: 'settings', label: 'Settings', icon: Settings, path: '/dashboard/settings' },
+    { id: 'support', label: 'Support', icon: HelpCircle, path: '/dashboard/support' },
   ];
 
   return (
