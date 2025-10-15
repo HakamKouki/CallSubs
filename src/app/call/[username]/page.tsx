@@ -3,7 +3,7 @@
 import { useParams, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useSession, signIn, signOut } from 'next-auth/react';
-import { Phone, Clock, DollarSign, Shield, Check, User, Loader2, AlertCircle, Crown } from 'lucide-react';
+import { Phone, Clock, DollarSign, Shield, Check, User, Loader2, AlertCircle, Crown, FileText, CheckSquare } from 'lucide-react';
 import WaitingRoom from '@/components/WaitingRoom';
 import ActiveCallSimple from '@/components/ActiveCallSimple';
 import CallCompleted from '@/components/CallCompleted';
@@ -17,6 +17,8 @@ interface StreamerData {
   isAcceptingCalls: boolean;
   isLive: boolean;
   minSubTier?: string;
+  callRules?: string;
+  requireRulesAgreement?: boolean;
 }
 
 export default function CallRequestPage() {
@@ -31,8 +33,9 @@ export default function CallRequestPage() {
   const [streamerData, setStreamerData] = useState<StreamerData | null>(null);
   const [subscriptionStatus, setSubscriptionStatus] = useState<any>(null);
   const [checkingSubscription, setCheckingSubscription] = useState(false);
+  const [rulesAgreed, setRulesAgreed] = useState(false);
   
-  // Call state management - added 'completed'
+  // Call state management
   const [callState, setCallState] = useState<'idle' | 'waiting' | 'active' | 'completed'>('idle');
   const [callRequestId, setCallRequestId] = useState<number | null>(null);
   const [activeCallData, setActiveCallData] = useState<any>(null);
@@ -59,14 +62,12 @@ export default function CallRequestPage() {
     fetchStreamerData();
   }, [username]);
 
-  // Check subscription when user is logged in
   useEffect(() => {
     if (session && streamerData) {
       checkSubscription();
     }
   }, [session, streamerData]);
 
-  // Check for payment success and show waiting room
   useEffect(() => {
     const success = searchParams.get('success');
     const callId = searchParams.get('call_request_id');
@@ -104,7 +105,6 @@ export default function CallRequestPage() {
       return;
     }
   
-    // Check if user is subscribed and meets tier requirement
     if (!subscriptionStatus?.isSubscribed) {
       setError('You must be subscribed to this channel to request a call');
       return;
@@ -114,12 +114,17 @@ export default function CallRequestPage() {
       setError(subscriptionStatus?.message || 'You do not meet the subscription tier requirement');
       return;
     }
+
+    // Check if rules agreement is required and not yet agreed
+    if (streamerData?.requireRulesAgreement && !rulesAgreed) {
+      setError('You must agree to the call rules before proceeding');
+      return;
+    }
   
     setIsSubmitting(true);
     setError('');
   
     try {
-      // Create Stripe checkout session
       const response = await fetch('/api/stripe/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -137,8 +142,6 @@ export default function CallRequestPage() {
       }
   
       const { url } = await response.json();
-  
-      // Redirect to Stripe Checkout
       window.location.href = url;
   
     } catch (err: any) {
@@ -163,11 +166,9 @@ export default function CallRequestPage() {
   const handleEndCall = () => {
     console.log('Call ended');
     setCallState('completed');
-    // Don't clear activeCallData yet - we need it for the completion screen
   };
 
   const handleBookAnother = () => {
-    // Reset to idle state to show the booking form again
     setCallState('idle');
     setActiveCallData(null);
     setCallRequestId(null);
@@ -191,7 +192,6 @@ export default function CallRequestPage() {
     }
   };
 
-  // Show completion screen after call ends
   if (callState === 'completed' && activeCallData) {
     return (
       <CallCompleted
@@ -203,7 +203,6 @@ export default function CallRequestPage() {
     );
   }
 
-  // Show waiting room when payment is successful
   if (callState === 'waiting' && callRequestId) {
     return (
       <WaitingRoom
@@ -215,7 +214,6 @@ export default function CallRequestPage() {
     );
   }
 
-  // Show active call when streamer accepts
   if (callState === 'active' && activeCallData) {
     return (
       <ActiveCallSimple
@@ -226,7 +224,6 @@ export default function CallRequestPage() {
     );
   }
 
-  // Loading state
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex items-center justify-center">
@@ -252,7 +249,6 @@ export default function CallRequestPage() {
     return null;
   }
 
-  // Main call request page
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white">
       <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-10">
@@ -352,6 +348,21 @@ export default function CallRequestPage() {
               </div>
             </div>
 
+            {/* Call Rules Section */}
+            {streamerData.callRules && (
+              <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <FileText className="w-5 h-5 text-purple-600" />
+                  <h3 className="text-lg font-semibold text-gray-900">Call Rules</h3>
+                </div>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
+                    {streamerData.callRules}
+                  </p>
+                </div>
+              </div>
+            )}
+
             <div className="space-y-3">
               <div className="bg-purple-50 rounded-lg p-4 text-sm">
                 <div className="flex items-start gap-2">
@@ -445,6 +456,28 @@ export default function CallRequestPage() {
               </div>
             )}
 
+            {/* Rules Agreement Checkbox */}
+            {streamerData.callRules && streamerData.requireRulesAgreement && session && subscriptionStatus?.meetsRequirement && (
+              <div className="mb-6 bg-purple-50 border border-purple-200 rounded-lg p-4">
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={rulesAgreed}
+                    onChange={(e) => setRulesAgreed(e.target.checked)}
+                    className="mt-1 w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+                  />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900">
+                      I have read and agree to follow the call rules
+                    </p>
+                    <p className="text-xs text-gray-600 mt-1">
+                      You must agree to the rules before proceeding to payment
+                    </p>
+                  </div>
+                </label>
+              </div>
+            )}
+
             <div className="space-y-4 mb-6">
               <div className="bg-gray-50 rounded-lg p-4">
                 <div className="flex items-center gap-2 mb-2">
@@ -472,7 +505,8 @@ export default function CallRequestPage() {
                 !streamerData.isAcceptingCalls || 
                 isSubmitting || 
                 checkingSubscription ||
-                !subscriptionStatus?.meetsRequirement
+                !subscriptionStatus?.meetsRequirement ||
+                (streamerData.requireRulesAgreement && !rulesAgreed)
               }
               className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-semibold disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
