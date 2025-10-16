@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import IntroSplash from "@/components/IntroSplash"; // 👈 our new hero section
+import IntroSplash from "@/components/IntroSplash"; 
+import PlatformBanner from "@/components/PlatformBanner";
 
 // --- Simple UI primitives (Tailwind-based) ---
 function Button({ children, onClick, href, variant = "primary", className = "" }: any) {
@@ -103,6 +104,8 @@ export default function HomePage() {
 
       {/* 🧠 Hero Section */}
       <IntroSplash onCtaClick={() => signIn("twitch", { callbackUrl: "/dashboard" })} />
+
+      <PlatformBanner />
 
       {/* 📝 Copy link section */}
       <div className="mt-10 flex flex-wrap items-center gap-3 px-4 max-w-6xl mx-auto">
