@@ -61,9 +61,9 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-neutral-50 text-neutral-900">
+    <div className="min-h-screen bg-gradient-to-b from-[#0d0d0d] via-[#120a1f] to-[#1a082c] text-white">
       {/* 🌿 Nav */}
-      <header className="sticky top-0 z-20 border-b border-black/5 bg-white/60 backdrop-blur">
+      <header className="sticky top-0 z-20 border-b border-white/10 bg-black/40 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           {/* Logo */}
           <a href="#" className="flex items-center gap-2">
