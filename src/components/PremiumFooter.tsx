@@ -71,7 +71,7 @@ export default function PremiumFooter() {
             <div className="flex items-center gap-3">
               <div className="p-1 rounded-lg bg-white/5 border border-white/10 shadow-[0_0_22px_rgba(168,85,247,0.35)]">
                 <img
-                  src="/logo.png"
+                  src="/logo.svg"
                   alt="CallSubs Logo"
                   className="h-9 w-9"
                 />
