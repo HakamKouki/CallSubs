@@ -4,7 +4,8 @@ import React, { useEffect, useRef } from "react";
 import { LogIn, Share2, Users, PhoneCall } from "lucide-react";
 
 export default function HowItWorksSection() {
-  const stepsRef = useRef<(HTMLDivElement | null)[]>([]);
+  // Properly typed mutable array of refs
+  const stepsRef = useRef<Array<HTMLDivElement | null>>([]);
 
   useEffect(() => {
     const io = new IntersectionObserver(
@@ -18,107 +19,91 @@ export default function HowItWorksSection() {
       { threshold: 0.2 }
     );
 
-    stepsRef.current.forEach((el) => el && io.observe(el));
+    stepsRef.current.forEach((el) => {
+      if (el) io.observe(el);
+    });
+
     return () => io.disconnect();
   }, []);
 
   const steps = [
     {
-      icon: <LogIn className="w-7 h-7 text-white" />,
-      title: "Sign In",
-      text: "Connect with Twitch, Kick or YouTube — no install needed.",
+      icon: <LogIn className="h-8 w-8 text-white" />,
+      title: "1. Sign In",
+      desc: "Connect your Twitch, Kick or YouTube account securely.",
     },
     {
-      icon: <Share2 className="w-7 h-7 text-white" />,
-      title: "Share Your Link",
-      text: "Post your CallSubs link in chat or your panels.",
+      icon: <Share2 className="h-8 w-8 text-white" />,
+      title: "2. Share Your Link",
+      desc: "Drop your CallSubs link in chat, panels or overlays.",
     },
     {
-      icon: <Users className="w-7 h-7 text-white" />,
-      title: "Viewers Join Queue",
-      text: "Fans pay or use sub perks to join your live call queue.",
+      icon: <Users className="h-8 w-8 text-white" />,
+      title: "3. Queue Up",
+      desc: "Subscribers join the call queue in real time.",
     },
     {
-      icon: <PhoneCall className="w-7 h-7 text-white" />,
-      title: "Control the Call",
-      text: "Accept, decline, or mute with one click — your stream, your rules.",
+      icon: <PhoneCall className="h-8 w-8 text-white" />,
+      title: "4. Go Live",
+      desc: "Accept calls with one click. Control everything instantly.",
     },
-  ];
+  ] as const;
 
   return (
     <section
-      className="relative overflow-hidden py-20 sm:py-24 md:py-28"
       id="how-it-works"
+      className="relative overflow-hidden pt-10 pb-20 sm:pt-12 sm:pb-24 md:pt-14 md:pb-28 bg-transparent"
     >
+      {/* Floating badge title */}
+      <div className="mb-14 text-center relative">
+        <div className="inline-block rounded-full border border-fuchsia-400/40 bg-white/5 px-6 py-3 
+                        shadow-[0_0_25px_rgba(168,85,247,0.35)] backdrop-blur-lg 
+                        animate-[pulse_4s_ease-in-out_infinite]">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white">
+            How It Works
+          </h2>
+        </div>
+        <p className="mt-5 text-white/80 max-w-2xl mx-auto text-lg sm:text-xl">
+          Go live in minutes. Real connections. Real revenue.
+        </p>
+      </div>
+
+      {/* Steps */}
+      <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 px-6 lg:px-8">
+        {steps.map((step, idx) => (
+          <div
+            key={step.title}
+            ref={(el: HTMLDivElement | null) => {
+              // explicit void body to satisfy TS
+              stepsRef.current[idx] = el;
+            }}
+            className="cs-step opacity-0 translate-y-5 text-center"
+            style={{ transitionDelay: `${idx * 150}ms` }}
+          >
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl
+                            bg-white/5 border border-white/10 shadow-[0_0_20px_rgba(168,85,247,0.25)]
+                            backdrop-blur-lg">
+              {step.icon}
+            </div>
+            <h3 className="text-white text-lg font-semibold mb-2">{step.title}</h3>
+            <p className="text-white/70 text-sm">{step.desc}</p>
+          </div>
+        ))}
+      </div>
+
       <style>{`
-        .hiw-fade {
-          opacity: 0;
-          transform: translateY(10px);
+        .cs-step {
           transition: opacity 800ms ease, transform 800ms ease;
         }
-        .hiw-fade[data-in-view="true"] {
+        .cs-step[data-in-view="true"] {
           opacity: 1;
           transform: translateY(0);
         }
+        @keyframes pulse {
+          0%, 100% { box-shadow: 0 0 25px rgba(168,85,247,0.35); }
+          50% { box-shadow: 0 0 35px rgba(168,85,247,0.55); }
+        }
       `}</style>
-
-      {/* Background glow */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 flex items-center justify-center"
-      >
-        <div
-          className="w-[85vw] max-w-5xl h-[85vw] max-h-[560px] rounded-full blur-3xl opacity-25"
-          style={{
-            background:
-              "radial-gradient(closest-side, rgba(168,85,247,0.18), rgba(168,85,247,0) 70%)",
-          }}
-        />
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 text-center">
-        {/* Title */}
-        <h2 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">
-          How It Works
-        </h2>
-        <p className="mt-4 text-white/80 max-w-2xl mx-auto text-lg sm:text-xl">
-          Go live in minutes. Real connections. Real revenue.
-        </p>
-
-        {/* Steps */}
-        <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-          {steps.map((step, i) => (
-            <div
-              key={step.title}
-              ref={(el: HTMLDivElement | null) => {
-                stepsRef.current[i] = el;
-              }}
-              className="hiw-fade flex flex-col items-center text-center"
-              style={{ transitionDelay: `${i * 150}ms` }}
-            >
-              <div className="w-16 h-16 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-xl flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.35)] mb-5 hover:scale-105 transition-transform duration-300">
-                {step.icon}
-              </div>
-              <h3 className="text-lg font-semibold text-white">{step.title}</h3>
-              <p className="mt-2 text-sm text-white/75 max-w-[200px]">
-                {step.text}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        {/* CTA */}
-        <div className="mt-14">
-          <a
-            href="#"
-            className="inline-flex items-center justify-center px-8 py-3 rounded-full font-semibold text-white
-                       bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-500
-                       shadow-lg transition-all duration-300 hover:shadow-[0_0_28px_rgba(168,85,247,0.35)]"
-          >
-            Get Started
-          </a>
-        </div>
-      </div>
     </section>
   );
 }
