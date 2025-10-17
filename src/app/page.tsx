@@ -12,6 +12,7 @@ import SafetyStack from "@/components/SafetyStack";
 import JoinDiscordSection from "@/components/JoinDiscordSection";
 import ContactBrandBanner from "@/components/ContactBrandBanner";
 import FAQSection from "@/components/FAQSection";
+import PremiumFooter from "@/components/PremiumFooter";
 
 // --- Simple UI primitives (Tailwind-based) ---
 function Button({ children, onClick, href, variant = "primary", className = "" }: any) {
@@ -121,6 +122,7 @@ export default function HomePage() {
       <JoinDiscordSection />
       <ContactBrandBanner />
       <FAQSection />
+      <PremiumFooter />
 
     </div>
   );

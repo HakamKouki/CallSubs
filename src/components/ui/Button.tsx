@@ -1,6 +1,16 @@
 "use client";
 import React from "react";
 
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  className?: string;
+  type?: "button" | "submit";
+  size?: "sm" | "md";
+  variant?: "outline" | "ghost";
+  disabled?: boolean; // 👈 Added support for disabled
+}
+
 export function Button({
   children,
   onClick,
@@ -8,14 +18,8 @@ export function Button({
   type = "button",
   size = "md",
   variant = "outline",
-}: {
-  children: React.ReactNode;
-  onClick?: () => void;
-  className?: string;
-  type?: "button" | "submit";
-  size?: "sm" | "md";
-  variant?: "outline" | "ghost";
-}) {
+  disabled = false,
+}: ButtonProps) {
   const sizes = {
     sm: "px-3 py-1.5 text-sm",
     md: "px-4 py-2 text-sm",
@@ -31,7 +35,10 @@ export function Button({
     <button
       type={type}
       onClick={onClick}
-      className={`rounded-lg font-semibold ${sizes[size]} ${variants[variant]} ${className}`}
+      disabled={disabled}
+      className={`rounded-lg font-semibold ${sizes[size]} ${variants[variant]} ${
+        disabled ? "opacity-50 cursor-not-allowed" : ""
+      } ${className}`}
     >
       {children}
     </button>
