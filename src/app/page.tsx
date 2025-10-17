@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import IntroSplash from "@/components/IntroSplash";
 import PlatformBanner from "@/components/PlatformBanner";
 import FutureSection from "@/components/FutureSection";
+import HowItWorksSection from "@/components/HowItWorksSection";
 
 // --- Simple UI primitives (Tailwind-based) ---
 function Button({ children, onClick, href, variant = "primary", className = "" }: any) {
@@ -71,7 +72,7 @@ export default function HomePage() {
           <div className="absolute inset-0 rounded-full p-[1.2px] bg-gradient-to-r from-fuchsia-500/60 via-purple-500/60 to-indigo-500/60 -z-10"></div>
 
           <a href="#" className="flex items-center gap-2">
-            <img src="/logo.png" alt="CallSubs Logo" className="h-8 w-8" />
+            <img src="/logo.svg" alt="CallSubs Logo" className="h-8 w-8" />
             <span className="text-lg font-semibold tracking-tight text-white">CallSubs</span>
           </a>
 
@@ -112,6 +113,7 @@ export default function HomePage() {
 
       {/* 🚀 Future Section */}
       <FutureSection />
+      <HowItWorksSection />
 
       {/* 📝 Copy link section */}
       <div className="mt-10 flex flex-wrap items-center gap-3 px-4 max-w-6xl mx-auto mb-20">
