@@ -65,13 +65,13 @@ export default function HomePage() {
       {/* ✨ Floating Nav */}
       <header className="fixed top-6 left-1/2 z-50 -translate-x-1/2 w-[90%] max-w-5xl">
         <div className="relative rounded-full px-6 py-3 flex items-center justify-between 
-                        backdrop-blur-xl bg-white/5 border border-white/10
-                        shadow-[0_0_35px_rgba(168,85,247,0.15)]">
+                        backdrop-blur-xl bg-black/30 border border-white/5
+                        shadow-[0_0_20px_rgba(0,0,0,0.25)]">
           {/* Gradient Border */}
-          <div className="absolute inset-0 rounded-full p-[1.5px] bg-gradient-to-r from-fuchsia-500 via-purple-500 to-indigo-500 -z-10"></div>
+          <div className="absolute inset-0 rounded-full p-[1.2px] bg-gradient-to-r from-fuchsia-500/60 via-purple-500/60 to-indigo-500/60 -z-10"></div>
 
           <a href="#" className="flex items-center gap-2">
-            <img src="/logo.svg" alt="CallSubs Logo" className="h-8 w-8" />
+            <img src="/logo.png" alt="CallSubs Logo" className="h-8 w-8" />
             <span className="text-lg font-semibold tracking-tight text-white">CallSubs</span>
           </a>
 
@@ -90,7 +90,7 @@ export default function HomePage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => signIn("twitch", { callbackUrl: "/dashboard" })}
-              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 hover:bg-white/20 px-4 py-2 text-sm font-semibold text-white transition"
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 px-4 py-2 text-sm font-semibold text-white transition"
             >
               <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
                 <path
