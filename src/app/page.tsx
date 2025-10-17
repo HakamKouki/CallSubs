@@ -108,10 +108,7 @@ export default function HomePage() {
       {/* 🧠 Hero Section */}
       <IntroSplash onCtaClick={() => signIn("twitch", { callbackUrl: "/dashboard" })} />
 
-      {/* 🪐 Platform Banner */}
       <PlatformBanner />
-
-      {/* 🚀 Future Section */}
       <FutureSection />
       <HowItWorksSection />
 
