@@ -39,16 +39,17 @@ export default function SimplicitySection() {
           transition={{ duration: 0.5 }}
           className="rounded-[28px] border border-white/10 bg-white/[0.04] backdrop-blur-xl"
         >
-          <div className="grid grid-cols-1 gap-10 p-6 sm:p-8 md:p-10 lg:grid-cols-2">
+          {/* Center content vertically on large screens */}
+          <div className="grid grid-cols-1 gap-10 p-6 sm:p-8 md:p-10 lg:grid-cols-2 lg:items-center">
             {/* LEFT — Live Status mockup */}
-            <div>
-              <div className="rounded-2xl border border-white/12 bg-black/50 p-5 md:p-6">
+            <div className="flex justify-center">
+              <div className="rounded-2xl border border-white/12 bg-black/50 p-5 md:p-6 w-full max-w-sm">
                 {/* Header */}
                 <div className="flex items-center justify-between">
                   <div className="text-white font-semibold">Live Status</div>
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-white/70">Accepting Calls</span>
-                    {/* Pretty toggle (mocked ON) */}
+                    {/* Toggle ON */}
                     <div className="relative h-6 w-10 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 p-[2px]">
                       <div className="h-full w-full rounded-full bg-black/40" />
                       <div className="absolute top-1 left-[22px] h-4 w-4 rounded-full bg-white shadow" />
