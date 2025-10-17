@@ -1,137 +1,163 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { motion } from "framer-motion";
-import { Shield, Zap, Headphones } from "lucide-react";
+import { DollarSign, Zap, Monitor, Shield } from "lucide-react";
 
-type FeatureProps = {
+type BulletProps = {
   Icon: React.ComponentType<{ className?: string }>;
   title: string;
-  children: React.ReactNode;
+  desc: string;
 };
 
 export default function SimplicitySection() {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const particles = useRef<
-    { x: number; y: number; r: number; a: number; s: number; o: number; t: number }[]
-  >([]);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const resize = () => {
-      if (!canvas.parentElement) return;
-      canvas.width = canvas.parentElement.clientWidth;
-      canvas.height = canvas.parentElement.clientHeight;
-      canvas.style.width = "100%";
-      canvas.style.height = "100%";
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    // Init particles
-    particles.current = Array.from({ length: 60 }).map(() => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      r: Math.random() * 2 + 1,
-      a: Math.random() * Math.PI * 2,
-      s: Math.random() * 0.5 + 0.2,
-      o: Math.random() * 0.5 + 0.2,
-      t: Math.random() * 1000,
-    }));
-
-    const draw = (ts: number) => {
-      if (!ctx || !canvas) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      for (const p of particles.current) {
-        p.a += 0.002;
-        p.x += Math.cos(p.a) * p.s;
-        p.y += Math.sin(p.a) * p.s;
-        p.t += 0.02;
-        p.o = 0.3 + Math.sin(p.t) * 0.2;
-
-        if (p.x < 0) p.x = canvas.width;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.y < 0) p.y = canvas.height;
-        if (p.y > canvas.height) p.y = 0;
-
-        ctx.globalAlpha = p.o;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = "#a855f7";
-        ctx.fill();
-      }
-
-      requestAnimationFrame(draw);
-    };
-
-    requestAnimationFrame(draw);
-    return () => window.removeEventListener("resize", resize);
-  }, []);
-
   return (
-    <section className="relative overflow-hidden bg-[#0d0d0d] py-24 sm:py-28 md:py-32">
-      {/* Animated particle background */}
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 -z-10 h-full w-full"
-      />
+    <section
+      aria-label="Built for streamers"
+      className="relative bg-black py-20 sm:py-24 md:py-28"
+    >
+      {/* Soft purple halo behind the widget */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 flex items-center justify-center"
+      >
+        <div
+          className="h-[520px] w-[92vw] max-w-6xl rounded-[36px] blur-3xl opacity-50"
+          style={{
+            background:
+              "radial-gradient(closest-side, rgba(139,92,246,0.25), rgba(139,92,246,0.12) 45%, rgba(139,92,246,0) 70%)",
+          }}
+        />
+      </div>
 
-      <div className="relative max-w-6xl mx-auto px-6 text-center">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
+      {/* Widget container */}
+      <div className="relative mx-auto w-full max-w-6xl px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-6"
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.5 }}
+          className="rounded-[28px] border border-white/10 bg-white/[0.04] backdrop-blur-xl"
         >
-          Simplicity Meets Power
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="max-w-2xl mx-auto text-lg sm:text-xl text-white/80 mb-14"
-        >
-          Built to make your streaming experience effortless. No setup pain.
-          No clutter. Just smooth interaction.
-        </motion.p>
+          <div className="grid grid-cols-1 gap-10 p-6 sm:p-8 md:p-10 lg:grid-cols-2">
+            {/* LEFT — Live Status mockup */}
+            <div>
+              <div className="rounded-2xl border border-white/12 bg-black/50 p-5 md:p-6">
+                {/* Header */}
+                <div className="flex items-center justify-between">
+                  <div className="text-white font-semibold">Live Status</div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-white/70">Accepting Calls</span>
+                    {/* Pretty toggle (mocked ON) */}
+                    <div className="relative h-6 w-10 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 p-[2px]">
+                      <div className="h-full w-full rounded-full bg-black/40" />
+                      <div className="absolute top-1 left-[22px] h-4 w-4 rounded-full bg-white shadow" />
+                    </div>
+                  </div>
+                </div>
 
-        {/* Feature list */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
-          <Feature Icon={Shield} title="Safe by Design">
-            Advanced moderation and verification keep trolls out of your stream.
-          </Feature>
-          <Feature Icon={Zap} title="Instant Setup">
-            Go live in minutes — no downloads, no complicated configs.
-          </Feature>
-          <Feature Icon={Headphones} title="Seamless Control">
-            Manage your call queue with a clean, intuitive dashboard.
-          </Feature>
-        </div>
+                {/* Settings */}
+                <div className="mt-5 space-y-4">
+                  <div>
+                    <div className="text-xs text-white/60 mb-1">Call Settings</div>
+                    <div className="rounded-xl border border-white/12 bg-white/[0.04] px-4 py-3 text-sm text-white/85 flex items-center justify-between">
+                      <span>Call Price:</span>
+                      <span className="font-semibold">$50.00</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="rounded-xl border border-white/12 bg-white/[0.04] px-4 py-3 text-sm text-white/85 flex items-center justify-between">
+                      <span>Duration:</span>
+                      <span className="font-semibold">5 minutes</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Metrics */}
+                <div className="mt-6">
+                  <div className="text-xs text-white/60 mb-1">Metrics</div>
+                  <div className="rounded-xl border border-white/12 bg-gradient-to-r from-violet-500/15 to-fuchsia-500/15 px-4 py-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-white/85">Total Earned</span>
+                      <span className="text-xl font-bold text-white">$127.50</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* RIGHT — Copy + bullets */}
+            <div className="flex flex-col justify-center">
+              <motion.h2
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.4 }}
+                transition={{ duration: 0.5, delay: 0.05 }}
+                className="text-white text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight"
+              >
+                Built for Streamers. No Headaches. No Limits.
+              </motion.h2>
+
+              <motion.p
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.4 }}
+                transition={{ duration: 0.5, delay: 0.12 }}
+                className="mt-4 text-white/80 text-base sm:text-lg leading-relaxed"
+              >
+                CallSubs was built to help you earn without distractions. Everything is simple,
+                clean, and designed to work in seconds. You stay in control at all times and decide
+                how and when to connect with your community.
+              </motion.p>
+
+              <div className="mt-7 grid grid-cols-1 gap-4">
+                <Bullet
+                  Icon={DollarSign}
+                  title="Set Your Own Price"
+                  desc="You’re in control. Choose what your time is worth."
+                />
+                <Bullet
+                  Icon={Zap}
+                  title="Stay in Flow"
+                  desc="Accept or pause calls without interrupting your stream."
+                />
+                <Bullet
+                  Icon={Monitor}
+                  title="No Tech Stress"
+                  desc="No installs, no OBS chaos. Just your browser."
+                />
+                <Bullet
+                  Icon={Shield}
+                  title="Safe by Default"
+                  desc="Verification and fast controls keep trolls out."
+                />
+              </div>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
 }
 
-function Feature({ Icon, title, children }: FeatureProps) {
+function Bullet({ Icon, title, desc }: BulletProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 8 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 
-                 hover:shadow-[0_0_30px_rgba(168,85,247,0.25)] transition-all duration-300"
+      viewport={{ once: true, amount: 0.5 }}
+      transition={{ duration: 0.45 }}
+      className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.035] p-3"
     >
-      <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-white/10 border border-white/10">
-        <Icon className="h-7 w-7 text-white" />
+      <div className="relative">
+        <div className="grid h-10 w-10 place-items-center rounded-lg border border-white/15 bg-white/10">
+          <Icon className="h-5 w-5 text-white/90" />
+        </div>
       </div>
-      <h3 className="text-white text-lg font-semibold mb-2">{title}</h3>
-      <p className="text-white/70 text-sm">{children}</p>
+      <div>
+        <div className="text-white font-medium">{title}</div>
+        <div className="text-white/75 text-sm">{desc}</div>
+      </div>
     </motion.div>
   );
 }
