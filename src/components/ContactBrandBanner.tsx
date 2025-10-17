@@ -74,7 +74,7 @@ export default function ContactBrandBanner() {
               />
               <div className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden ring-1 ring-white/10 bg-black flex items-center justify-center relative z-[1]">
                 <img
-                  src="/logo.png"
+                  src="/logo.svg"
                   alt="CallSubs Logo"
                   className="w-9 h-9 md:w-10 md:h-10 object-contain"
                 />

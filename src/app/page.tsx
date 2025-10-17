@@ -11,6 +11,7 @@ import SimplicitySection from "@/components/SimplicitySection";
 import SafetyStack from "@/components/SafetyStack";
 import JoinDiscordSection from "@/components/JoinDiscordSection";
 import ContactBrandBanner from "@/components/ContactBrandBanner";
+import FAQSection from "@/components/FAQSection";
 
 // --- Simple UI primitives (Tailwind-based) ---
 function Button({ children, onClick, href, variant = "primary", className = "" }: any) {
@@ -119,23 +120,8 @@ export default function HomePage() {
       <SafetyStack />
       <JoinDiscordSection />
       <ContactBrandBanner />
+      <FAQSection />
 
-      {/* 📝 Copy link section */}
-      <div className="mt-10 flex flex-wrap items-center gap-3 px-4 max-w-6xl mx-auto mb-20">
-        <code className="rounded-xl border border-black/10 bg-white px-4 py-2 text-sm shadow-sm">
-          {widgetUrl}
-        </code>
-        <Button
-          variant="outline"
-          onClick={() => {
-            navigator.clipboard.writeText(widgetUrl);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 1500);
-          }}
-        >
-          {copied ? "Copied!" : "Copy link"}
-        </Button>
-      </div>
     </div>
   );
 }
