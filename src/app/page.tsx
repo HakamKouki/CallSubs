@@ -9,6 +9,7 @@ import FutureSection from "@/components/FutureSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import SimplicitySection from "@/components/SimplicitySection";
 import SafetyStack from "@/components/SafetyStack";
+import JoinDiscordSection from "@/components/JoinDiscordSection";
 
 // --- Simple UI primitives (Tailwind-based) ---
 function Button({ children, onClick, href, variant = "primary", className = "" }: any) {
@@ -115,6 +116,7 @@ export default function HomePage() {
       <HowItWorksSection />
       <SimplicitySection />
       <SafetyStack />
+      <JoinDiscordSection />
 
       {/* 📝 Copy link section */}
       <div className="mt-10 flex flex-wrap items-center gap-3 px-4 max-w-6xl mx-auto mb-20">
