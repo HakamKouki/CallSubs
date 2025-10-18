@@ -1,260 +1,236 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
-import { motion } from "framer-motion";
+import React, { useEffect, useRef } from "react";
 import { Shield, Lock } from "lucide-react";
 import PremiumFooter from "@/components/PremiumFooter";
+import TrustMonitor from "@/components/safety/TrustMonitor";
 
-// ------- Floating / sticky header (dark, premium) -------
-function FloatingHeader() {
-  return (
-    <div className="sticky top-3 z-50 flex justify-center px-4">
-      <nav
-        className={[
-          "w-full max-w-5xl",
-          "rounded-[20px] border",
-          "bg-black/50 backdrop-blur-xl",
-          "border-white/10",
-          "shadow-[0_0_0_1px_rgba(255,255,255,0.06)_inset,0_8px_30px_rgba(0,0,0,0.35)]",
-        ].join(" ")}
-      >
-        <div className="flex items-center justify-between px-4 py-2 md:px-6 md:py-3">
-          <Link href="/" className="flex items-center gap-2">
-            {/* Logo image if present: /public/logo.png */}
-            <img src="/logo.png" alt="CallSubs" className="h-7 w-7 rounded-md" />
-            <span className="text-sm md:text-base font-semibold">CallSubs</span>
-          </Link>
-
-          <div className="hidden md:flex items-center gap-6 text-sm text-white/80">
-            <Link href="/#features" className="hover:text-white transition">
-              Features
-            </Link>
-            <Link href="/#how-it-works" className="hover:text-white transition">
-              How it works
-            </Link>
-            <Link href="/#pricing" className="hover:text-white transition">
-              Pricing
-            </Link>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Link
-              href="/api/auth/signin"
-              className="text-sm font-medium rounded-full px-3.5 py-2 bg-white/10 border border-white/15 hover:bg-white/15 transition"
-            >
-              Sign in
-            </Link>
-          </div>
-        </div>
-      </nav>
-    </div>
-  );
-}
-
-// ------- Small helpers -------
-const Section = ({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => (
-  <section className={`w-full max-w-7xl mx-auto px-6 ${className}`}>{children}</section>
-);
-
+/* --------------------------- Particle Glow BG --------------------------- */
 export default function SafetyPage() {
-  return (
-    <div className="min-h-screen w-full bg-black text-white">
-      {/* header */}
-      <FloatingHeader />
+  const particlesRef = useRef<HTMLCanvasElement | null>(null);
+  const rafRef = useRef<number>(0);
+  const dotsRef = useRef<
+    { x: number; y: number; r: number; a: number; s: number; o: number; t: number }[]
+  >([]);
 
-      {/* subtle starry dots + centerpiece glow */}
-      <div
-        aria-hidden
-        className="pointer-events-none fixed inset-0"
-        style={{
-          background:
-            "radial-gradient(1200px 600px at 50% -10%, rgba(124,58,237,0.18), transparent 60%), radial-gradient(900px 400px at 80% 20%, rgba(99,102,241,0.15), transparent 60%)",
-        }}
+  useEffect(() => {
+    const canvas = particlesRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d", { alpha: true });
+    let w = 0,
+      h = 0;
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+
+    const init = (count = 46) => {
+      dotsRef.current = Array.from({ length: count }, () => {
+        const r = Math.random() * 1.4 + 0.6;
+        return {
+          x: Math.random() * w,
+          y: Math.random() * h,
+          r,
+          a: Math.random() * Math.PI * 2,
+          s: (Math.random() * 0.18 + 0.06) * dpr,
+          o: Math.random() * 0.85,
+          t: Math.random() * 2000,
+        };
+      });
+    };
+
+    const resize = () => {
+      const rect = canvas.parentElement!.getBoundingClientRect();
+      w = Math.floor(rect.width * dpr);
+      h = Math.floor(rect.height * dpr);
+      canvas.width = w;
+      canvas.height = h;
+      canvas.style.width = rect.width + "px";
+      canvas.style.height = rect.height + "px";
+      init();
+    };
+
+    const draw = (ts: number) => {
+      ctx!.clearRect(0, 0, w, h);
+      ctx!.globalCompositeOperation = "lighter";
+
+      for (const p of dotsRef.current) {
+        p.x += Math.cos(p.a) * p.s * 0.28;
+        p.y += Math.sin(p.a) * p.s * 0.28;
+        p.a += (Math.sin((ts + p.t) * 0.00024) - 0.5) * 0.016;
+
+        if (p.x < -10) p.x = w + 10;
+        if (p.x > w + 10) p.x = -10;
+        if (p.y < -10) p.y = h + 10;
+        if (p.y > h + 10) p.y = -10;
+
+        const pulse = (Math.sin((ts + p.t) * 0.0021) + 1) / 2;
+        const alpha = 0.06 + pulse * 0.26 * p.o;
+
+        const grd = ctx!.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 9);
+        grd.addColorStop(0, `rgba(168,85,247, ${alpha})`);
+        grd.addColorStop(1, "rgba(0,0,0,0)");
+        ctx!.fillStyle = grd;
+        ctx!.beginPath();
+        ctx!.arc(p.x, p.y, p.r * 9, 0, Math.PI * 2);
+        ctx!.fill();
+
+        ctx!.fillStyle = `rgba(220,200,255, ${Math.min(0.5, alpha + 0.06)})`;
+        ctx!.beginPath();
+        ctx!.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx!.fill();
+      }
+
+      rafRef.current = requestAnimationFrame(draw);
+    };
+
+    resize();
+    window.addEventListener("resize", resize, { passive: true });
+    rafRef.current = requestAnimationFrame(draw);
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return (
+    <div className="relative min-h-screen w-full overflow-x-hidden font-['Inter'] text-white bg-black">
+      <style>{`
+        .ring-wrap { position: relative; width: 240px; height: 240px; border-radius: 50%; display: grid; place-items: center; }
+        .ring { position: absolute; border-radius: 9999px; border: 1px solid rgba(168,85,247,0.35); }
+        .ring.r1 { width: 240px; height: 240px; box-shadow: 0 0 24px rgba(168,85,247,0.35) inset, 0 0 30px rgba(59,130,246,0.25); animation: ringPulse 5s ease-in-out infinite; }
+        .ring.r2 { width: 200px; height: 200px; border-color: rgba(59,130,246,0.35); animation: ringPulse 5.6s ease-in-out infinite; }
+        .ring.r3 { width: 160px; height: 160px; border-color: rgba(147,51,234,0.35); animation: ringPulse 6.2s ease-in-out infinite; }
+        .ring.r4 { width: 120px; height: 120px; border-color: rgba(168,85,247,0.5); animation: ringPulse 6.8s ease-in-out infinite; }
+        @keyframes ringPulse { 0%,100% { transform: scale(1); opacity: .9; } 50% { transform: scale(1.04); opacity: 1; } }
+        .shield-core { width: 84px; height: 84px; border-radius: 9999px; display: grid; place-items: center; background: radial-gradient(closest-side, rgba(124,58,237,0.24), rgba(0,0,0,0) 70%); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 0 20px rgba(124,58,237,0.45), 0 0 14px rgba(46,144,255,0.18); }
+        .wave-bar { width: 6px; border-radius: 3px; background: linear-gradient(180deg, rgba(168,85,247,0.65), rgba(59,130,246,0.65)); box-shadow: 0 0 10px rgba(168,85,247,0.35); animation: wave 1.4s ease-in-out infinite; }
+        @keyframes wave { 0%, 100% { height: 10px; opacity: .6; } 50% { height: 44px; opacity: 1; } }
+        .progress-ring { position: relative; width: 120px; height: 120px; border-radius: 9999px; border: 2px dashed rgba(168,85,247,0.35); animation: spin 10s linear infinite; box-shadow: 0 0 16px rgba(59,130,246,0.2) inset; }
+        @keyframes spin { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
+      `}</style>
+
+      {/* Soft glow background */}
+      <canvas
+        ref={particlesRef}
+        className="absolute inset-0 w-full h-full opacity-40 pointer-events-none"
+        aria-hidden="true"
       />
 
-      {/* Hero */}
-      <Section className="py-16 md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-        <div className="max-w-2xl">
-          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">
-            Built for Real Conversations. <br />
-            Protected by Real Technology.
-          </h1>
-          <p className="mt-5 text-white/80 text-lg">
-            Safety isn’t an add-on at CallSubs—it’s the foundation. Every call,
-            every feature, and every interaction is designed to keep you protected
-            while you stay in control.
-          </p>
-          <div className="mt-8">
-            <Link
-              href="/#waitlist"
-              className="inline-flex items-center rounded-xl px-5 py-3 font-semibold bg-white text-black hover:bg-white/90 transition"
-            >
-              Request Early Access
-            </Link>
+      <main className="relative z-10 space-y-24 md:space-y-32">
+        {/* 🛡️ Hero Section */}
+        <section className="max-w-7xl mx-auto px-6 pt-24 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
+              Built for Real Conversations.<br />
+              Protected by Real Technology.
+            </h1>
+            <p className="mt-4 text-white/80">
+              Safety isn’t an add-on at CallSubs—it’s the foundation. Every call,
+              every feature, and every interaction is designed to keep you
+              protected while you stay in control.
+            </p>
           </div>
-        </div>
-
-        {/* Shield ripple illustration */}
-        <div className="relative flex items-center justify-center">
-          <div className="absolute inset-0 -z-10 flex items-center justify-center">
-            <div className="w-72 h-72 rounded-full blur-3xl bg-purple-500/15" />
-          </div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
-            className="relative grid place-items-center"
-          >
-            <RippleRings />
-            <div className="absolute inset-0 grid place-items-center">
-              <Shield className="w-14 h-14 text-purple-300" />
+          <div className="flex justify-center">
+            <div className="ring-wrap">
+              <div className="ring r1"></div>
+              <div className="ring r2"></div>
+              <div className="ring r3"></div>
+              <div className="ring r4"></div>
+              <div className="shield-core">
+                <Shield className="w-10 h-10 text-purple-400" />
+              </div>
             </div>
-          </motion.div>
-        </div>
-      </Section>
+          </div>
+        </section>
 
-      {/* Verification mockup */}
-      <Section className="py-10 md:py-14 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-        <div className="max-w-xl">
-          <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">
-            Verified Identities, Real Accountability.
-          </h2>
-          <p className="mt-4 text-white/80">
-            Phone verification ties one identity to one number. We track linked
-            accounts and propagate bans across identities to protect you from
-            repeat offenders.
-          </p>
-        </div>
-
-        <div className="relative">
-          <div className="absolute -inset-6 rounded-3xl blur-3xl bg-purple-500/15" />
-          <div className="relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-5">
+        {/* ✅ Verification Mockup */}
+        <section className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-extrabold">Verified Identities</h2>
+            <p className="mt-4 text-white/80">
+              Phone verification ties one identity to one number. We track linked
+              accounts and propagate bans across identities to protect you from
+              repeat offenders.
+            </p>
+          </div>
+          <div className="relative rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur">
             <KV label="Viewer Phone" value="+1 •••• 89" />
             <KV label="OTP Code" value="123456" />
             <KV label="Verified" value="Success" valueClass="text-emerald-400" />
           </div>
-        </div>
-      </Section>
+        </section>
 
-      {/* Live transcription + copy block */}
-      <Section className="py-12 md:py-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div className="relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-5">
-          <div className="flex items-center gap-2 text-sm text-white/85">
-            <Lock className="w-4 h-4 text-purple-300" />
-            <span>Live Transcription</span>
+        {/* 🗣️ Live Transcription */}
+        <section className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+          <div className="relative rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur">
+            <div className="flex items-center gap-2 text-sm text-white/85">
+              <Lock className="w-4 h-4 text-purple-300" />
+              <span>Live Transcription</span>
+            </div>
+            <Waveform />
           </div>
-          <Waveform />
-          <p className="mt-2 text-xs text-white/60">
-            AI flags slurs, harassment, and risk in real time.
-          </p>
-        </div>
-
-        <div className="max-w-xl">
-          <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight">
-            AI That Listens So You Don’t Have To.
-          </h3>
-          <p className="mt-4 text-white/80">
-            Real-time transcription analyzes conversations as they happen—detecting
-            harassment and risky behavior. Calls are automatically flagged,
-            helping you moderate without breaking flow.
-          </p>
-        </div>
-      </Section>
-
-      {/* Private by Default + right glow orb */}
-      <Section className="py-12 md:py-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-start relative">
-        <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-6">
-          <div className="flex items-center gap-2 text-sm text-white/85">
-            <Lock className="w-4 h-4 text-purple-300" />
-            <span className="font-semibold">Private by Default</span>
+          <div>
+            <h2 className="text-2xl md:text-3xl font-extrabold">AI That Listens</h2>
+            <p className="mt-4 text-white/80">
+              Real-time transcription analyzes conversations as they happen—detecting
+              harassment and risky behavior.
+            </p>
           </div>
-          <ul className="mt-4 text-sm text-white/80 space-y-2">
-            <li>• Encrypted data with strict access controls</li>
-            <li>• GDPR-aligned user protections</li>
-            <li>• Masked phone digits by default</li>
-            <li>• Transparent unban history</li>
+        </section>
+
+        {/* 🧰 Streamer Tools / Trust Monitor */}
+        <TrustMonitor />
+
+        {/* 🔒 Private by Default */}
+        <section className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur">
+            <div className="flex items-center gap-2 text-sm text-white/85 mb-3">
+              <Lock className="w-4 h-4 text-purple-300" />
+              <span className="font-semibold">Private by Default</span>
+            </div>
+            <ul className="text-sm text-white/80 space-y-2">
+              <li>• Encrypted data with strict access controls</li>
+              <li>• GDPR-aligned user protections</li>
+              <li>• Masked phone digits by default</li>
+              <li>• Transparent unban history</li>
+            </ul>
+          </div>
+          <div>
+            <h2 className="text-2xl md:text-3xl font-extrabold">
+              Protected Connections. Private by Default.
+            </h2>
+          </div>
+        </section>
+
+        {/* 🚀 Always Evolving */}
+        <section className="max-w-7xl mx-auto px-6 text-center">
+          <h2 className="text-3xl font-extrabold">Always Evolving. Always Safer.</h2>
+          <p className="mt-4 text-white/80 max-w-2xl mx-auto">
+            We’re building the future of live safety with smart prevention and
+            stronger signals.
+          </p>
+          <ul className="mt-6 text-white/80 space-y-2 text-sm">
+            <li>• Behavioral Pattern Detection</li>
+            <li>• Enhanced Trust Ratings</li>
+            <li>• Shared Ban Lists between creators</li>
           </ul>
-        </div>
+        </section>
 
-        <div className="max-w-xl relative">
-          <div className="absolute -top-8 -right-10 w-56 h-56 rounded-full blur-3xl bg-purple-500/15" />
-          <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight">
-            Protected Connections. Private by Default.
-          </h3>
-          <p className="mt-4 text-white/80">
-            Your safety and privacy are core to the CallSubs platform. From masked
-            identifiers to transparent moderation history, we balance protection
-            with clarity.
-          </p>
-        </div>
-      </Section>
-
-      {/* Always Evolving */}
-      <Section className="py-16 md:py-24 text-center">
-        <h3 className="text-3xl font-extrabold tracking-tight">
-          Always Evolving. Always Safer.
-        </h3>
-        <p className="mt-4 text-white/80 max-w-2xl mx-auto">
-          We’re building the future of live safety with smart prevention and
-          stronger signals.
-        </p>
-        <ul className="mt-6 text-white/80 space-y-2 text-sm">
-          <li>• Behavioral Pattern Detection</li>
-          <li>• Enhanced Trust Ratings</li>
-          <li>• Shared Ban Lists between creators</li>
-        </ul>
-      </Section>
-
-      {/* CTA */}
-      <Section className="py-20 md:py-28 text-center relative">
-        <div className="absolute left-1/2 -translate-x-1/2 -top-8 w-[28rem] h-[28rem] rounded-full blur-3xl bg-purple-500/12" />
-        <h3 className="text-4xl font-extrabold tracking-tight">
-          Your Stream. Your Rules. Our Protection.
-        </h3>
-        <p className="mt-3 text-white/80">Join the safest way to connect live.</p>
-        <div className="mt-8">
-          <Link
-            href="/#waitlist"
-            className="inline-flex items-center rounded-xl px-6 py-3 font-semibold bg-white text-black hover:bg-white/90 transition"
-          >
+        {/* ✨ CTA */}
+        <section className="max-w-7xl mx-auto px-6 text-center pb-24">
+          <h2 className="text-4xl font-extrabold">Your Stream. Your Rules. Our Protection.</h2>
+          <p className="mt-3 text-white/80">Join the safest way to connect live.</p>
+          <button className="mt-6 inline-flex items-center rounded-xl px-6 py-3 font-semibold bg-white text-black hover:bg-white/90 transition">
             Get Started
-          </Link>
-        </div>
-      </Section>
+          </button>
+        </section>
+      </main>
 
-      {/* footer */}
+      {/* Footer */}
       <PremiumFooter />
     </div>
   );
 }
 
-/* ----------------------- Illustrations ----------------------- */
-
-function RippleRings() {
-  const Ring = ({ delay = 0 }: { delay?: number }) => (
-    <motion.div
-      className="w-48 h-48 rounded-full border border-purple-400/30"
-      style={{ boxShadow: "0 0 24px rgba(168,85,247,0.25)" }}
-      initial={{ scale: 0.7, opacity: 0.4 }}
-      animate={{ scale: 1.05, opacity: 0.85 }}
-      transition={{ repeat: Infinity, repeatType: "reverse", duration: 3.2, delay }}
-    />
-  );
-  return (
-    <div className="relative grid place-items-center">
-      <Ring delay={0} />
-      <Ring delay={0.6} />
-      <Ring delay={1.2} />
-    </div>
-  );
-}
+/* --------------------------- UI helpers --------------------------- */
 
 function KV({
   label,
@@ -274,7 +250,6 @@ function KV({
 }
 
 function Waveform() {
-  // deterministic heights for SSR friendliness
   const bars = Array.from({ length: 36 }, (_, i) => (i % 5) * 8 + 18);
   return (
     <div className="mt-4 h-24 rounded-lg bg-gradient-to-r from-purple-500/20 to-indigo-500/20 p-2 flex items-end gap-1 border border-white/10">
