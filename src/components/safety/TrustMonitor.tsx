@@ -190,7 +190,7 @@ export default function TrustMonitor() {
       <div
         className="
           relative z-10
-          grid grid-flow-col auto-cols-[minmax(280px,1fr)]
+          grid grid-flow-col auto-cols-[minmax(320px,1fr)]
           sm:grid-flow-row sm:auto-cols-auto
           sm:[grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]
           lg:[grid-template-columns:repeat(4,minmax(260px,1fr))]
