@@ -1,9 +1,8 @@
-
 import React from "react";
 
 export default function TrustMonitor() {
   return (
-    <div className="relative w-full rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden px-5 py-6 md:px-7 md:py-8">
+    <div className="relative w-full rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-visible px-5 py-6 md:px-7 md:py-8">
       <style>{`
         .tm-gradient-bg {
           background: radial-gradient(900px 420px at 50% -140px, rgba(109,40,217,0.25), rgba(109,40,217,0) 60%),
@@ -14,7 +13,7 @@ export default function TrustMonitor() {
           content: "";
           position: absolute;
           inset: 0;
-          opacity: 0.12; /* reduced for less interference */
+          opacity: 0.12;
           background-image:
             linear-gradient(rgba(255,255,255,0.35) 1px, transparent 1px),
             linear-gradient(90deg, rgba(255,255,255,0.35) 1px, transparent 1px);
@@ -66,7 +65,7 @@ export default function TrustMonitor() {
         @keyframes spin { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
         .tm-bar {
           position: relative;
-          height: 8px; /* taller for clearer read */
+          height: 8px;
           border-radius: 9999px;
           overflow: hidden;
           background: rgba(255,255,255,0.15);
@@ -87,7 +86,7 @@ export default function TrustMonitor() {
           position: absolute;
           left: 6%;
           right: 6%;
-          top: 96px; /* moved lower to avoid overlap with headers */
+          top: 96px;
           height: 2px;
           background: linear-gradient(90deg, rgba(59,130,246,0), rgba(59,130,246,0.5), rgba(236,72,153,0.5), rgba(59,130,246,0));
           filter: drop-shadow(0 0 8px rgba(59,130,246,0.35));
@@ -124,9 +123,9 @@ export default function TrustMonitor() {
         }
         .tm-card-inner {
           display: grid;
-          grid-template-rows: auto auto auto auto; /* title, value, bar, subtext */
+          grid-template-rows: auto auto auto auto;
           row-gap: 10px;
-          min-height: 160px; /* equal height */
+          min-height: 160px;
         }
         .tm-title {
           font-size: 0.875rem;
@@ -136,7 +135,7 @@ export default function TrustMonitor() {
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          min-height: 28px; /* keeps bars aligned */
+          min-height: 28px;
           color: #fff;
           font-weight: 600;
         }
@@ -158,26 +157,10 @@ export default function TrustMonitor() {
           border: 1px solid rgba(255,255,255,0.22);
           background: rgba(255,255,255,0.08);
         }
-        .tm-badge--green {
-          color: #bbf7d0;
-          background: rgba(34,197,94,0.18);
-          border-color: rgba(34,197,94,0.35);
-        }
-        .tm-badge--yellow {
-          color: #fde68a;
-          background: rgba(245,158,11,0.18);
-          border-color: rgba(245,158,11,0.35);
-        }
-        .tm-badge--red {
-          color: #fecaca;
-          background: rgba(239,68,68,0.18);
-          border-color: rgba(239,68,68,0.35);
-        }
-        .tm-badge--blue {
-          color: #bae6fd;
-          background: rgba(56,189,248,0.18);
-          border-color: rgba(56,189,248,0.35);
-        }
+        .tm-badge--green { color: #bbf7d0; background: rgba(34,197,94,0.18); border-color: rgba(34,197,94,0.35); }
+        .tm-badge--yellow { color: #fde68a; background: rgba(245,158,11,0.18); border-color: rgba(245,158,11,0.35); }
+        .tm-badge--red { color: #fecaca; background: rgba(239,68,68,0.18); border-color: rgba(239,68,68,0.35); }
+        .tm-badge--blue { color: #bae6fd; background: rgba(56,189,248,0.18); border-color: rgba(56,189,248,0.35); }
         .tm-trusted-pulse {
           animation: tmPulseSoft 3s ease-in-out infinite;
           text-shadow: 0 0 8px rgba(34,197,94,0.55);
@@ -188,7 +171,7 @@ export default function TrustMonitor() {
         }
       `}</style>
 
-      {/* Background gradients (grid removed previously) */}
+      {/* Background gradients */}
       <div className="absolute inset-0 tm-gradient-bg" aria-hidden="true" />
 
       {/* soft particles */}
@@ -203,7 +186,7 @@ export default function TrustMonitor() {
         </h4>
       </div>
 
-      {/* Cards container: mobile scroll + fluid desktop grid */}
+      {/* Cards container */}
       <div
         className="
           relative z-10
