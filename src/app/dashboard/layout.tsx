@@ -33,42 +33,48 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
     <>
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 lg:hidden"
           onClick={onClose}
         />
       )}
 
       <aside
-        className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
+        className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-[#1a1a1a] border-r border-gray-800/50 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
       >
-        <div className="h-16 flex items-center justify-between px-6 border-b border-gray-200">
+        {/* Logo Header */}
+        <div className="h-16 flex items-center justify-between px-6 border-b border-gray-800/50">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-purple-700 flex items-center justify-center shadow-lg shadow-purple-600/30">
               <span className="text-white font-bold text-sm">CS</span>
             </div>
-            <span className="font-semibold text-gray-900">CallSubs</span>
+            <span className="font-semibold text-white">CallSubs</span>
           </div>
-          <button onClick={onClose} className="lg:hidden p-2 rounded-lg hover:bg-gray-100">
-            <X className="w-5 h-5" />
+          <button 
+            onClick={onClose} 
+            className="lg:hidden p-2 rounded-lg hover:bg-white/5 transition-colors"
+          >
+            <X className="w-5 h-5 text-gray-400" />
           </button>
         </div>
 
-        <div className="p-4 border-b border-gray-200">
+        {/* User Profile Section */}
+        <div className="p-4 border-b border-gray-800/50">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
-              <span className="text-purple-600 font-semibold text-sm">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-purple-700 flex items-center justify-center shadow-lg shadow-purple-600/30">
+              <span className="text-white font-semibold text-sm">
                 {useSession().data?.user?.name?.charAt(0).toUpperCase()}
               </span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">
+              <p className="text-sm font-medium text-white truncate">
                 {useSession().data?.user?.name}
               </p>
-              <p className="text-xs text-gray-500">Streamer</p>
+              <p className="text-xs text-gray-400">Streamer</p>
             </div>
           </div>
         </div>
 
+        {/* Navigation Menu */}
         <nav className="p-4 space-y-1">
           {menuItems.map((item) => {
             const Icon = item.icon;
@@ -81,7 +87,11 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                   router.push(item.path);
                   onClose();
                 }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${isActive ? 'bg-purple-50 text-purple-600 font-medium' : 'text-gray-700 hover:bg-gray-50'}`}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                  isActive 
+                    ? 'bg-purple-600/20 text-purple-400 font-medium shadow-lg shadow-purple-600/10 border border-purple-500/30' 
+                    : 'text-gray-400 hover:bg-white/5 hover:text-gray-300'
+                }`}
               >
                 <Icon className="w-5 h-5" />
                 <span className="flex-1 text-left text-sm">{item.label}</span>
@@ -91,10 +101,11 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
           })}
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
+        {/* Logout Button */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-800/50">
           <button
             onClick={() => signOut({ callbackUrl: '/' })}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all border border-transparent hover:border-red-500/30"
           >
             <LogOut className="w-5 h-5" />
             <span className="text-sm font-medium">Log out</span>
@@ -125,17 +136,19 @@ export default function DashboardLayout({
   const getPageTitle = () => {
     if (pathname === '/dashboard') return 'Dashboard';
     if (pathname === '/dashboard/analytics') return 'Analytics';
+    if (pathname === '/dashboard/history') return 'Call History';
     if (pathname === '/dashboard/payouts') return 'Payouts';
     if (pathname === '/dashboard/settings') return 'Settings';
+    if (pathname === '/dashboard/support') return 'Support';
     return 'Dashboard';
   };
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <p className="mt-4 text-gray-400">Loading...</p>
         </div>
       </div>
     );
@@ -146,42 +159,45 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-[#0a0a0a] flex">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:px-8">
+        {/* Header */}
+        <header className="h-16 bg-[#1a1a1a] border-b border-gray-800/50 flex items-center justify-between px-4 lg:px-8">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setSidebarOpen(true)} 
-              className="lg:hidden p-2 rounded-lg hover:bg-gray-100"
+              className="lg:hidden p-2 rounded-lg hover:bg-white/5 transition-colors"
             >
-              <Menu className="w-6 h-6" />
+              <Menu className="w-6 h-6 text-gray-400" />
             </button>
-            <h1 className="text-xl font-bold text-gray-900">{getPageTitle()}</h1>
+            <h1 className="text-xl font-bold text-white">{getPageTitle()}</h1>
           </div>
           
+          {/* User Profile in Header (Desktop) */}
           <div className="hidden lg:flex items-center gap-3">
             {session.user?.image ? (
               <img 
                 src={session.user.image} 
                 alt={session.user.name || 'User'} 
-                className="w-10 h-10 rounded-full" 
+                className="w-10 h-10 rounded-full border-2 border-purple-500/30" 
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
-                <span className="text-purple-600 font-semibold">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-purple-700 flex items-center justify-center shadow-lg shadow-purple-600/30">
+                <span className="text-white font-semibold">
                   {session.user?.name?.charAt(0).toUpperCase()}
                 </span>
               </div>
             )}
             <div>
-              <p className="text-sm font-medium text-gray-900">{session.user?.name}</p>
-              <p className="text-xs text-gray-500">Streamer</p>
+              <p className="text-sm font-medium text-white">{session.user?.name}</p>
+              <p className="text-xs text-gray-400">Streamer</p>
             </div>
           </div>
         </header>
 
+        {/* Main Content */}
         <main className="flex-1 overflow-auto">
           {children}
         </main>
