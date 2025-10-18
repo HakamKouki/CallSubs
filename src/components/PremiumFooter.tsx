@@ -122,7 +122,7 @@ export default function PremiumFooter() {
               <h4 className="text-sm font-semibold text-white/80">Quick Links</h4>
               <ul className="space-y-2">
                 <li><a href="#how-it-works" className={linkClasses}>Features</a></li>
-                <li><a href="#safety" className={linkClasses}>Safety</a></li>
+                <li><a href="/safety" className={linkClasses}>Safety</a></li>
                 <li><a href="/terms" className={linkClasses}>Terms of Service</a></li>
               </ul>
             </div>
