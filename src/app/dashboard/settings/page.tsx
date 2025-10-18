@@ -92,49 +92,49 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-full flex items-center justify-center p-8">
+      <div className="min-h-full flex items-center justify-center p-8 bg-[#0a0a0a]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading settings...</p>
+          <p className="mt-4 text-gray-400">Loading settings...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-4 lg:p-8">
+    <div className="p-4 lg:p-8 bg-[#0a0a0a] min-h-screen">
       <div className="max-w-4xl mx-auto">
         {/* Success Message */}
         {showSuccessMessage && (
-          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3">
-            <CheckSquare className="w-5 h-5 text-green-600" />
-            <p className="text-sm font-medium text-green-700">Settings saved successfully!</p>
+          <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-xl flex items-center gap-3">
+            <CheckSquare className="w-5 h-5 text-green-400" />
+            <p className="text-sm font-medium text-green-400">Settings saved successfully!</p>
           </div>
         )}
 
         {/* Call Rules Section */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-6">
-          <div className="p-6 border-b border-gray-200">
+        <div className="bg-[#1a1a1a] rounded-2xl shadow-xl border border-gray-800/50 mb-6">
+          <div className="p-6 border-b border-gray-800/50">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-purple-600" />
+                <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-purple-400" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">Call Rules</h2>
-                  <p className="text-sm text-gray-500">Set expectations for viewers before they call</p>
+                  <h2 className="text-lg font-semibold text-white">Call Rules</h2>
+                  <p className="text-sm text-gray-400">Set expectations for viewers before they call</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={setDefaultRules}
-                  className="px-4 py-2 text-sm font-medium text-purple-600 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-purple-400 bg-purple-500/10 border border-purple-500/30 rounded-lg hover:bg-purple-500/20 transition-all"
                 >
                   Load Default Rules
                 </button>
                 <button
                   onClick={clearRules}
-                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  className="p-2 text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/30 rounded-lg transition-all"
                   title="Clear all rules"
                 >
                   <Trash2 className="w-5 h-5" />
@@ -145,14 +145,14 @@ export default function SettingsPage() {
 
           <div className="p-6">
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-400 mb-2">
                 Rules Content
               </label>
               <textarea
                 value={callRules}
                 onChange={(e) => setCallRules(e.target.value)}
                 rows={12}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none font-mono text-sm"
+                className="w-full px-4 py-3 bg-black/40 border border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none font-mono text-sm text-white placeholder-gray-500"
                 placeholder="Enter your call rules here... (e.g., Be respectful, keep conversation appropriate, etc.)"
               />
               <p className="text-xs text-gray-500 mt-2">
@@ -163,15 +163,15 @@ export default function SettingsPage() {
             {/* Preview */}
             {callRules && (
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-400 mb-2">
                   Preview (How it will appear to viewers)
                 </label>
-                <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                <div className="p-4 bg-black/20 border border-gray-800/50 rounded-lg">
                   <div className="flex items-start gap-2 mb-3">
-                    <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                    <p className="text-sm font-medium text-gray-900">Call Rules</p>
+                    <AlertCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm font-medium text-white">Call Rules</p>
                   </div>
-                  <div className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
+                  <div className="text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">
                     {callRules}
                   </div>
                 </div>
@@ -179,22 +179,22 @@ export default function SettingsPage() {
             )}
 
             {/* Require Agreement Toggle */}
-            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-3 flex-1">
-                  <CheckSquare className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <CheckSquare className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-sm font-medium text-gray-900 mb-1">
+                    <p className="text-sm font-medium text-white mb-1">
                       Require viewers to agree to rules
                     </p>
-                    <p className="text-xs text-gray-600">
+                    <p className="text-xs text-gray-400">
                       Viewers must check a box confirming they've read and agree to follow your rules before they can proceed to payment
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => setRequireRulesAgreement(!requireRulesAgreement)}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0 ${requireRulesAgreement ? 'bg-green-500' : 'bg-gray-300'}`}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0 ${requireRulesAgreement ? 'bg-purple-600 shadow-lg shadow-purple-600/50' : 'bg-gray-700'}`}
                 >
                   <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${requireRulesAgreement ? 'translate-x-6' : 'translate-x-1'}`} />
                 </button>
@@ -204,11 +204,11 @@ export default function SettingsPage() {
         </div>
 
         {/* Info Box */}
-        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+        <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-2xl p-4 mb-6">
           <div className="flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
-            <div className="text-sm text-yellow-800">
-              <p className="font-medium mb-1">Important Information</p>
+            <AlertCircle className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
+            <div className="text-sm text-yellow-500/80">
+              <p className="font-medium mb-1 text-yellow-400">Important Information</p>
               <ul className="space-y-1 text-xs">
                 <li>• Your rules will be displayed on your public call link page</li>
                 <li>• Clear rules help set expectations and reduce conflicts</li>
@@ -220,40 +220,40 @@ export default function SettingsPage() {
         </div>
 
         {/* Additional Settings (Future) */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-          <div className="p-6 border-b border-gray-200">
+        <div className="bg-[#1a1a1a] rounded-2xl shadow-xl border border-gray-800/50">
+          <div className="p-6 border-b border-gray-800/50">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <SettingsIcon className="w-5 h-5 text-gray-600" />
+              <div className="w-10 h-10 bg-gray-700/50 rounded-lg flex items-center justify-center">
+                <SettingsIcon className="w-5 h-5 text-gray-400" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">Additional Settings</h2>
-                <p className="text-sm text-gray-500">More options coming soon</p>
+                <h2 className="text-lg font-semibold text-white">Additional Settings</h2>
+                <p className="text-sm text-gray-400">More options coming soon</p>
               </div>
             </div>
           </div>
 
           <div className="p-6 space-y-4">
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg opacity-50 cursor-not-allowed">
+            <div className="flex items-center justify-between p-4 bg-black/20 border border-gray-800/50 rounded-lg opacity-50 cursor-not-allowed">
               <div className="flex items-center gap-3">
-                <Bell className="w-5 h-5 text-gray-400" />
+                <Bell className="w-5 h-5 text-gray-500" />
                 <div>
                   <p className="text-sm font-medium text-gray-500">Email Notifications</p>
-                  <p className="text-xs text-gray-400">Get notified when viewers request calls</p>
+                  <p className="text-xs text-gray-600">Get notified when viewers request calls</p>
                 </div>
               </div>
-              <span className="text-xs text-gray-400 bg-gray-200 px-2 py-1 rounded">Coming Soon</span>
+              <span className="text-xs text-gray-500 bg-gray-800 px-2 py-1 rounded">Coming Soon</span>
             </div>
 
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg opacity-50 cursor-not-allowed">
+            <div className="flex items-center justify-between p-4 bg-black/20 border border-gray-800/50 rounded-lg opacity-50 cursor-not-allowed">
               <div className="flex items-center gap-3">
-                <Shield className="w-5 h-5 text-gray-400" />
+                <Shield className="w-5 h-5 text-gray-500" />
                 <div>
                   <p className="text-sm font-medium text-gray-500">Blocked Users</p>
-                  <p className="text-xs text-gray-400">Manage your blocked viewer list</p>
+                  <p className="text-xs text-gray-600">Manage your blocked viewer list</p>
                 </div>
               </div>
-              <span className="text-xs text-gray-400 bg-gray-200 px-2 py-1 rounded">Coming Soon</span>
+              <span className="text-xs text-gray-500 bg-gray-800 px-2 py-1 rounded">Coming Soon</span>
             </div>
           </div>
         </div>
@@ -262,14 +262,14 @@ export default function SettingsPage() {
         <div className="mt-8 flex items-center justify-end gap-4">
           <button
             onClick={fetchSettings}
-            className="px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            className="px-6 py-3 text-sm font-medium text-gray-400 bg-black/40 border border-gray-700 rounded-lg hover:bg-black/60 transition-all"
           >
             Cancel
           </button>
           <button
             onClick={handleSaveSettings}
             disabled={saving}
-            className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-all disabled:bg-gray-700 disabled:cursor-not-allowed shadow-lg shadow-purple-600/30 hover:shadow-purple-600/50"
           >
             {saving ? (
               <>

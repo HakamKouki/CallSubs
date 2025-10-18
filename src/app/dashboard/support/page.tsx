@@ -69,26 +69,20 @@ export default function SupportPage() {
   };
 
   return (
-    <div className="p-4 lg:p-8">
+    <div className="p-4 lg:p-8 bg-[#0a0a0a] min-h-screen">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Support</h1>
-          <p className="text-gray-600">Get help from the CallSubs team</p>
-        </div>
-
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Contact Form */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-              <div className="p-6 border-b border-gray-200">
+            <div className="bg-[#1a1a1a] rounded-2xl shadow-xl border border-gray-800/50">
+              <div className="p-6 border-b border-gray-800/50">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <MessageSquare className="w-5 h-5 text-purple-600" />
+                  <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <MessageSquare className="w-5 h-5 text-purple-400" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">Contact Support</h2>
-                    <p className="text-sm text-gray-500">We typically respond within 24 hours</p>
+                    <h2 className="text-lg font-semibold text-white">Contact Support</h2>
+                    <p className="text-sm text-gray-400">We typically respond within 24 hours</p>
                   </div>
                 </div>
               </div>
@@ -96,12 +90,12 @@ export default function SupportPage() {
               <form onSubmit={handleSubmit} className="p-6 space-y-6">
                 {/* Success Message */}
                 {submitted && (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4">
                     <div className="flex items-start gap-3">
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
                       <div>
-                        <p className="text-sm font-medium text-green-800">Message sent successfully!</p>
-                        <p className="text-xs text-green-700 mt-1">
+                        <p className="text-sm font-medium text-green-400">Message sent successfully!</p>
+                        <p className="text-xs text-green-500/80 mt-1">
                           Our support team will get back to you shortly at {session?.user?.email}
                         </p>
                       </div>
@@ -111,33 +105,33 @@ export default function SupportPage() {
 
                 {/* Error Message */}
                 {error && (
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
                     <div className="flex items-start gap-3">
-                      <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                      <p className="text-sm text-red-800">{error}</p>
+                      <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm text-red-400">{error}</p>
                     </div>
                   </div>
                 )}
 
                 {/* User Info Display */}
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <p className="text-sm text-gray-600">
-                    <strong>Logged in as:</strong> {session?.user?.name}
+                <div className="bg-black/20 border border-gray-800/50 rounded-lg p-4">
+                  <p className="text-sm text-gray-400">
+                    <strong className="text-white">Logged in as:</strong> {session?.user?.name}
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">
-                    <strong>Email:</strong> {session?.user?.email || 'No email on file'}
+                  <p className="text-sm text-gray-400 mt-1">
+                    <strong className="text-white">Email:</strong> {session?.user?.email || 'No email on file'}
                   </p>
                 </div>
 
                 {/* Category */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Category <span className="text-red-500">*</span>
+                  <label className="block text-sm font-medium text-gray-400 mb-2">
+                    Category <span className="text-red-400">*</span>
                   </label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full px-4 py-2 bg-black/40 border border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white"
                     required
                   >
                     <option value="general">General Question</option>
@@ -152,15 +146,15 @@ export default function SupportPage() {
 
                 {/* Subject */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Subject <span className="text-red-500">*</span>
+                  <label className="block text-sm font-medium text-gray-400 mb-2">
+                    Subject <span className="text-red-400">*</span>
                   </label>
                   <input
                     type="text"
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
                     placeholder="Brief description of your issue"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full px-4 py-2 bg-black/40 border border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-500"
                     required
                     maxLength={200}
                   />
@@ -169,15 +163,15 @@ export default function SupportPage() {
 
                 {/* Message */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Message <span className="text-red-500">*</span>
+                  <label className="block text-sm font-medium text-gray-400 mb-2">
+                    Message <span className="text-red-400">*</span>
                   </label>
                   <textarea
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     rows={8}
                     placeholder="Please provide as much detail as possible about your question or issue..."
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                    className="w-full px-4 py-3 bg-black/40 border border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-white placeholder-gray-500"
                     required
                     maxLength={2000}
                   />
@@ -188,7 +182,7 @@ export default function SupportPage() {
                 <button
                   type="submit"
                   disabled={submitting || !subject.trim() || !message.trim()}
-                  className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium disabled:bg-gray-300 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all font-medium disabled:bg-gray-700 disabled:cursor-not-allowed shadow-lg shadow-purple-600/30 hover:shadow-purple-600/50"
                 >
                   {submitting ? (
                     <>
@@ -209,52 +203,52 @@ export default function SupportPage() {
           {/* Sidebar - Help Resources */}
           <div className="space-y-6">
             {/* Quick Help */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="bg-[#1a1a1a] rounded-2xl shadow-xl border border-gray-800/50 p-6">
               <div className="flex items-center gap-2 mb-4">
-                <HelpCircle className="w-5 h-5 text-purple-600" />
-                <h3 className="font-semibold text-gray-900">Quick Help</h3>
+                <HelpCircle className="w-5 h-5 text-purple-400" />
+                <h3 className="font-semibold text-white">Quick Help</h3>
               </div>
               <div className="space-y-3 text-sm">
-                <a href="#" className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                  <span className="text-gray-700">Getting Started Guide</span>
-                  <ExternalLink className="w-4 h-4 text-gray-400" />
+                <a href="#" className="flex items-center justify-between p-3 bg-black/20 border border-gray-800/50 rounded-lg hover:bg-white/5 transition-colors">
+                  <span className="text-gray-300">Getting Started Guide</span>
+                  <ExternalLink className="w-4 h-4 text-gray-500" />
                 </a>
-                <a href="#" className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                  <span className="text-gray-700">Payment FAQs</span>
-                  <ExternalLink className="w-4 h-4 text-gray-400" />
+                <a href="#" className="flex items-center justify-between p-3 bg-black/20 border border-gray-800/50 rounded-lg hover:bg-white/5 transition-colors">
+                  <span className="text-gray-300">Payment FAQs</span>
+                  <ExternalLink className="w-4 h-4 text-gray-500" />
                 </a>
-                <a href="#" className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                  <span className="text-gray-700">Troubleshooting</span>
-                  <ExternalLink className="w-4 h-4 text-gray-400" />
+                <a href="#" className="flex items-center justify-between p-3 bg-black/20 border border-gray-800/50 rounded-lg hover:bg-white/5 transition-colors">
+                  <span className="text-gray-300">Troubleshooting</span>
+                  <ExternalLink className="w-4 h-4 text-gray-500" />
                 </a>
               </div>
             </div>
 
             {/* Contact Info */}
-            <div className="bg-purple-50 rounded-xl border border-purple-200 p-6">
+            <div className="bg-purple-500/10 rounded-2xl border border-purple-500/30 p-6">
               <div className="flex items-center gap-2 mb-4">
-                <Mail className="w-5 h-5 text-purple-600" />
-                <h3 className="font-semibold text-gray-900">Direct Email</h3>
+                <Mail className="w-5 h-5 text-purple-400" />
+                <h3 className="font-semibold text-white">Direct Email</h3>
               </div>
-              <p className="text-sm text-gray-600 mb-3">
+              <p className="text-sm text-gray-400 mb-3">
                 You can also email us directly at:
               </p>
               <a 
                 href="mailto:support@callsubs.com"
-                className="text-sm font-medium text-purple-600 hover:text-purple-700 break-all"
+                className="text-sm font-medium text-purple-400 hover:text-purple-300 break-all"
               >
                 support@callsubs.com
               </a>
             </div>
 
             {/* Response Time */}
-            <div className="bg-blue-50 rounded-xl border border-blue-200 p-6">
+            <div className="bg-blue-500/10 rounded-2xl border border-blue-500/30 p-6">
               <div className="flex items-center gap-2 mb-3">
-                <AlertCircle className="w-5 h-5 text-blue-600" />
-                <h3 className="font-semibold text-gray-900">Response Time</h3>
+                <AlertCircle className="w-5 h-5 text-blue-400" />
+                <h3 className="font-semibold text-white">Response Time</h3>
               </div>
-              <p className="text-sm text-gray-600">
-                Our support team typically responds within <strong>24 hours</strong> during business days.
+              <p className="text-sm text-gray-400">
+                Our support team typically responds within <strong className="text-white">24 hours</strong> during business days.
               </p>
             </div>
           </div>
