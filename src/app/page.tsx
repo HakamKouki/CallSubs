@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import IntroSplash from "@/components/IntroSplash";
 import PlatformBanner from "@/components/PlatformBanner";
@@ -47,7 +47,7 @@ export default function HomePage() {
   const [copied, setCopied] = useState(false);
   const widgetUrl = `https://callsubs.app/widget/yourchannel`;
 
-  // 🔐 Redirect to dashboard if user is authenticated
+  // 🔒 Redirect to dashboard if user is authenticated
   useEffect(() => {
     if (status === "authenticated") {
       router.push("/dashboard");
@@ -96,7 +96,7 @@ export default function HomePage() {
 
           <div className="flex items-center gap-2">
             <button
-              onClick={() => signIn("twitch", { callbackUrl: "/dashboard" })}
+              onClick={() => router.push("/auth/signin")}
               className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 px-4 py-2 text-sm font-semibold text-white transition"
             >
               <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
@@ -112,7 +112,7 @@ export default function HomePage() {
       </header>
 
       {/* 🧠 Hero Section */}
-      <IntroSplash onCtaClick={() => signIn("twitch", { callbackUrl: "/dashboard" })} />
+      <IntroSplash onCtaClick={() => router.push("/auth/signin")} />
 
       <PlatformBanner />
       <FutureSection />
