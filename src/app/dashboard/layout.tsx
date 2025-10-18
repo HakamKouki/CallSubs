@@ -3,6 +3,7 @@
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { 
   LayoutDashboard, 
   Settings, 
@@ -44,8 +45,14 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
         {/* Logo Header */}
         <div className="h-16 flex items-center justify-between px-6 border-b border-gray-800/50">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-purple-700 flex items-center justify-center shadow-lg shadow-purple-600/30">
-              <span className="text-white font-bold text-sm">CS</span>
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-purple-700 flex items-center justify-center shadow-lg shadow-purple-600/30 p-1">
+              <Image 
+                src="/logo.svg" 
+                alt="CallSubs Logo" 
+                width={24} 
+                height={24}
+                className="w-full h-full"
+              />
             </div>
             <span className="font-semibold text-white">CallSubs</span>
           </div>
