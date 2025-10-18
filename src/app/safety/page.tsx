@@ -70,7 +70,7 @@ function FloatingNav() {
   );
 }
 
-/** ✅ Pill helper */
+/** Pill helper */
 function Pill({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[.06] px-3 py-2 text-sm text-white/85">
@@ -82,10 +82,9 @@ function Pill({ children }: { children: React.ReactNode }) {
 export default function SafetyPage() {
   return (
     <div className="min-h-screen bg-[#0b0b0d] text-white">
-      {/* Sticky header */}
       <FloatingNav />
 
-      {/* Hero Section */}
+      {/* Hero */}
       <section className="relative mx-auto max-w-6xl px-4 pt-16 md:pt-20">
         <div
           aria-hidden="true"
@@ -115,7 +114,7 @@ export default function SafetyPage() {
             </div>
           </div>
 
-          {/* concentric rings illustration */}
+          {/* Concentric illustration */}
           <div className="relative">
             <div className="absolute inset-0 -z-10 rounded-3xl bg-[radial-gradient(closest-side,rgba(168,85,247,.18),rgba(168,85,247,0)_70%)] blur-2xl" />
             <div className="mx-auto mt-4 grid place-items-center">
@@ -138,7 +137,7 @@ export default function SafetyPage() {
         </div>
       </section>
 
-      {/* Verification Section */}
+      {/* Verification */}
       <section className="relative mx-auto max-w-6xl px-4 py-16 grid grid-cols-1 gap-8 md:grid-cols-2">
         <div>
           <h2 className="text-3xl font-extrabold">
@@ -170,10 +169,9 @@ export default function SafetyPage() {
         </div>
       </section>
 
-      {/* Live Transcription Section */}
+      {/* Live Transcription */}
       <section className="relative mx-auto max-w-6xl px-4 py-16">
         <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-2">
-          {/* Live transcription mock */}
           <div className="relative rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-lg">
             <div className="absolute inset-0 -z-10 rounded-2xl bg-[radial-gradient(closest-side,rgba(168,85,247,.18),rgba(168,85,247,0)_70%)] blur-2xl opacity-60" />
             <div className="flex items-center gap-2 text-sm text-white/80">
@@ -208,7 +206,7 @@ export default function SafetyPage() {
         </div>
       </section>
 
-      {/* ✅ Total Control Section */}
+      {/* Total Control */}
       <section className="relative mx-auto max-w-6xl px-4 pb-20">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           <div>
@@ -222,7 +220,6 @@ export default function SafetyPage() {
             </ul>
           </div>
 
-          {/* Hotkey card */}
           <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-lg">
             <div className="flex items-center gap-2 text-sm text-white/80">
               <Keyboard className="h-4 w-4" />
@@ -251,80 +248,15 @@ export default function SafetyPage() {
         </div>
       </section>
 
-      {/* Trust monitor row */}
-      <TrustMonitor />
-
-      {/* Private by Default + copy */}
-      <section className="relative mx-auto grid max-w-6xl grid-cols-1 items-start gap-10 px-4 py-16 md:grid-cols-2">
-        <div className="relative rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-lg">
-          <div className="absolute inset-0 -z-10 rounded-2xl bg-[radial-gradient(closest-side,rgba(168,85,247,.18),rgba(168,85,247,0)_70%)] blur-2xl opacity-60" />
-          <div className="flex items-center gap-2 text-sm font-semibold text-white">
-            <Lock className="h-4 w-4" />
-            Private by Default
-          </div>
-          <ul className="mt-4 space-y-2 text-sm text-white/80">
-            <li>• Encrypted data with strict access controls</li>
-            <li>• GDPR-aligned user protections</li>
-            <li>• Masked phone digits by default</li>
-            <li>• Transparent unban history</li>
-          </ul>
-        </div>
-
-        <div>
-          <h3 className="text-3xl font-extrabold">
-            Protected Connections. Private by Default.
-          </h3>
-          <p className="mt-3 text-white/80">
-            Your safety and privacy are core to the CallSubs platform. From
-            masked identifiers to transparent moderation history, we balance
-            protection with clarity.
-          </p>
-        </div>
-      </section>
-
-      {/* Always evolving + CTA */}
-      <section className="relative mx-auto max-w-6xl px-4 pb-20">
-        <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-[1.15fr_.85fr]">
-          <div>
-            <h3 className="text-3xl font-extrabold">
-              Always Evolving. Always Safer.
-            </h3>
-            <p className="mt-3 text-white/80">
-              We’re building the future of live safety with smart prevention and
-              better signals.
-            </p>
-            <ul className="mt-4 space-y-2 text-white/80">
-              <li>• Behavioral Pattern Detection</li>
-              <li>• Enhanced Trust Ratings</li>
-              <li>• Shared Ban Lists between creators</li>
-            </ul>
-          </div>
-
-          <div className="relative h-48">
-            <div className="absolute inset-0 -z-10 rounded-full bg-[radial-gradient(closest-side,rgba(168,85,247,.2),rgba(168,85,247,0)_70%)] blur-2xl opacity-70" />
-            <div className="absolute inset-0 grid place-items-center">
-              <div className="relative h-40 w-40">
-                {[1, 2, 3].map((i) => (
-                  <div
-                    key={i}
-                    className="absolute inset-0 rounded-full border border-fuchsia-400/25"
-                    style={{ transform: `scale(${0.5 + i * 0.15})` }}
-                  />
-                ))}
-                <div className="absolute inset-0 grid place-items-center">
-                  <div className="h-10 w-10 rounded-full bg-white/10 ring-1 ring-white/15" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <h3 className="mt-16 text-center text-3xl font-extrabold">
-          Your Stream. Your Rules. Our Protection.
-        </h3>
-        <p className="mt-2 text-center text-white/70">
-          Join the safest way to connect live.
+      {/* ✅ Smarter Safety Network — fixed layout */}
+      <section className="relative mx-auto max-w-6xl px-4 pb-20 text-center">
+        <h2 className="text-3xl font-extrabold">A Smarter Safety Network.</h2>
+        <p className="mt-3 text-white/80 max-w-2xl mx-auto">
+          Bans propagate globally across linked identities. Trust scores and caller badges help you pre-screen at a glance.
         </p>
+        <div className="mt-10">
+          <TrustMonitor />
+        </div>
       </section>
 
       {/* Footer */}
