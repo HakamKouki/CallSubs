@@ -188,18 +188,20 @@ export default function TrustMonitor() {
 
       {/* Cards container */}
       <div
-        className="
-          relative z-10
-          grid grid-flow-col auto-cols-[minmax(320px,1fr)]
-          sm:grid-flow-row sm:auto-cols-auto
-          sm:[grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]
-          lg:[grid-template-columns:repeat(4,minmax(260px,1fr))]
-          gap-5 lg:gap-6
-          overflow-x-auto sm:overflow-visible
-          snap-x sm:snap-none
-          -mx-2 px-2 pb-2
-        "
-      >
+         className="
+            relative z-10
+            grid grid-flow-col auto-cols-[minmax(340px,1fr)]
+            sm:grid-flow-row sm:auto-cols-auto
+            sm:[grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]
+            lg:[grid-template-columns:repeat(4,minmax(340px,1fr))]
+            gap-6
+            overflow-x-auto sm:overflow-visible
+            snap-x sm:snap-none
+            -mx-2 px-6 pb-4
+            pr-10
+          "
+        >
+
         {/* Trusted */}
         <div className="tm-card rounded-2xl p-5 snap-start">
           <div className="tm-card-inner">
