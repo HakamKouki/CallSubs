@@ -170,7 +170,7 @@ export default function SafetyPage() {
         </div>
       </section>
 
-      {/* Live Transcription + copy + Hotkey */}
+      {/* Live Transcription Section */}
       <section className="relative mx-auto max-w-6xl px-4 py-16">
         <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-2">
           {/* Live transcription mock */}
@@ -204,32 +204,48 @@ export default function SafetyPage() {
               detecting harassment and risky behavior. Calls are automatically
               flagged, helping you moderate without breaking flow.
             </p>
+          </div>
+        </div>
+      </section>
 
-            {/* Hotkey card */}
-            <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-lg">
-              <div className="flex items-center gap-2 text-sm text-white/80">
-                <Keyboard className="h-4 w-4" />
-                Hotkey Configuration
-              </div>
-              <div className="mt-4 flex items-center gap-2">
-                <span className="rounded-md border border-white/15 bg-white/10 px-2 py-1 text-sm">
-                  Ctrl
-                </span>
-                <span className="rounded-md border border-white/15 bg-white/10 px-2 py-1 text-sm">
-                  M
-                </span>
-                <span className="ml-2 text-sm text-white/70">
-                  Press to instantly mute viewer audio.
-                </span>
-              </div>
-              <div className="mt-4 flex gap-3">
-                <button className="rounded-lg bg-fuchsia-600 px-3 py-1.5 text-sm font-semibold">
-                  Panic Mute
-                </button>
-                <button className="rounded-lg border border-white/15 bg-white/10 px-3 py-1.5 text-sm">
-                  One-click Ban
-                </button>
-              </div>
+      {/* ✅ Total Control Section */}
+      <section className="relative mx-auto max-w-6xl px-4 pb-20">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-extrabold">
+              Total Control at Your Fingertips.
+            </h2>
+            <ul className="mt-4 space-y-2 text-white/80 text-sm">
+              <li>• Instant Mute Hotkey (Ctrl+M)</li>
+              <li>• Panic Mute (emergency full mute)</li>
+              <li>• One-click Ban Button</li>
+            </ul>
+          </div>
+
+          {/* Hotkey card */}
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-lg">
+            <div className="flex items-center gap-2 text-sm text-white/80">
+              <Keyboard className="h-4 w-4" />
+              Hotkey Configuration
+            </div>
+            <div className="mt-4 flex items-center gap-2">
+              <span className="rounded-md border border-white/15 bg-white/10 px-2 py-1 text-sm">
+                Ctrl
+              </span>
+              <span className="rounded-md border border-white/15 bg-white/10 px-2 py-1 text-sm">
+                M
+              </span>
+              <span className="ml-2 text-sm text-white/70">
+                Press to instantly mute viewer audio.
+              </span>
+            </div>
+            <div className="mt-4 flex gap-3">
+              <button className="rounded-lg bg-fuchsia-600 px-3 py-1.5 text-sm font-semibold">
+                Panic Mute
+              </button>
+              <button className="rounded-lg border border-white/15 bg-white/10 px-3 py-1.5 text-sm">
+                One-click Ban
+              </button>
             </div>
           </div>
         </div>
