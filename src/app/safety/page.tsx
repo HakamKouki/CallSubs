@@ -1,265 +1,380 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import { Shield, Lock } from "lucide-react";
-import PremiumFooter from "@/components/PremiumFooter";
+import Link from "next/link";
+import { useEffect } from "react";
+import {
+  Shield,
+  CheckCircle2,
+  Phone,
+  KeyRound,
+  Lock,
+  Sparkles,
+  Keyboard,
+} from "lucide-react";
 import TrustMonitor from "@/components/safety/TrustMonitor";
 
-/* --------------------------- Particle Glow BG --------------------------- */
-export default function SafetyPage() {
-  const particlesRef = useRef<HTMLCanvasElement | null>(null);
-  const rafRef = useRef<number>(0);
-  const dotsRef = useRef<
-    { x: number; y: number; r: number; a: number; s: number; o: number; t: number }[]
-  >([]);
-
+/** Floating sticky nav (same vibe as homepage) */
+function FloatingNav() {
   useEffect(() => {
-    const canvas = particlesRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d", { alpha: true });
-    let w = 0,
-      h = 0;
-    const dpr = Math.max(1, window.devicePixelRatio || 1);
-
-    const init = (count = 46) => {
-      dotsRef.current = Array.from({ length: count }, () => {
-        const r = Math.random() * 1.4 + 0.6;
-        return {
-          x: Math.random() * w,
-          y: Math.random() * h,
-          r,
-          a: Math.random() * Math.PI * 2,
-          s: (Math.random() * 0.18 + 0.06) * dpr,
-          o: Math.random() * 0.85,
-          t: Math.random() * 2000,
-        };
-      });
+    const el = document.getElementById("safety-nav");
+    if (!el) return;
+    const onScroll = () => {
+      if (window.scrollY > 8) el.classList.add("shadow-[0_10px_40px_rgba(0,0,0,.35)]");
+      else el.classList.remove("shadow-[0_10px_40px_rgba(0,0,0,.35)]");
     };
-
-    const resize = () => {
-      const rect = canvas.parentElement!.getBoundingClientRect();
-      w = Math.floor(rect.width * dpr);
-      h = Math.floor(rect.height * dpr);
-      canvas.width = w;
-      canvas.height = h;
-      canvas.style.width = rect.width + "px";
-      canvas.style.height = rect.height + "px";
-      init();
-    };
-
-    const draw = (ts: number) => {
-      ctx!.clearRect(0, 0, w, h);
-      ctx!.globalCompositeOperation = "lighter";
-
-      for (const p of dotsRef.current) {
-        p.x += Math.cos(p.a) * p.s * 0.28;
-        p.y += Math.sin(p.a) * p.s * 0.28;
-        p.a += (Math.sin((ts + p.t) * 0.00024) - 0.5) * 0.016;
-
-        if (p.x < -10) p.x = w + 10;
-        if (p.x > w + 10) p.x = -10;
-        if (p.y < -10) p.y = h + 10;
-        if (p.y > h + 10) p.y = -10;
-
-        const pulse = (Math.sin((ts + p.t) * 0.0021) + 1) / 2;
-        const alpha = 0.06 + pulse * 0.26 * p.o;
-
-        const grd = ctx!.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 9);
-        grd.addColorStop(0, `rgba(168,85,247, ${alpha})`);
-        grd.addColorStop(1, "rgba(0,0,0,0)");
-        ctx!.fillStyle = grd;
-        ctx!.beginPath();
-        ctx!.arc(p.x, p.y, p.r * 9, 0, Math.PI * 2);
-        ctx!.fill();
-
-        ctx!.fillStyle = `rgba(220,200,255, ${Math.min(0.5, alpha + 0.06)})`;
-        ctx!.beginPath();
-        ctx!.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx!.fill();
-      }
-
-      rafRef.current = requestAnimationFrame(draw);
-    };
-
-    resize();
-    window.addEventListener("resize", resize, { passive: true });
-    rafRef.current = requestAnimationFrame(draw);
-    return () => {
-      cancelAnimationFrame(rafRef.current);
-      window.removeEventListener("resize", resize);
-    };
+    onScroll();
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
-    <div className="relative min-h-screen w-full overflow-x-hidden font-['Inter'] text-white bg-black">
-      <style>{`
-        .ring-wrap { position: relative; width: 240px; height: 240px; border-radius: 50%; display: grid; place-items: center; }
-        .ring { position: absolute; border-radius: 9999px; border: 1px solid rgba(168,85,247,0.35); }
-        .ring.r1 { width: 240px; height: 240px; box-shadow: 0 0 24px rgba(168,85,247,0.35) inset, 0 0 30px rgba(59,130,246,0.25); animation: ringPulse 5s ease-in-out infinite; }
-        .ring.r2 { width: 200px; height: 200px; border-color: rgba(59,130,246,0.35); animation: ringPulse 5.6s ease-in-out infinite; }
-        .ring.r3 { width: 160px; height: 160px; border-color: rgba(147,51,234,0.35); animation: ringPulse 6.2s ease-in-out infinite; }
-        .ring.r4 { width: 120px; height: 120px; border-color: rgba(168,85,247,0.5); animation: ringPulse 6.8s ease-in-out infinite; }
-        @keyframes ringPulse { 0%,100% { transform: scale(1); opacity: .9; } 50% { transform: scale(1.04); opacity: 1; } }
-        .shield-core { width: 84px; height: 84px; border-radius: 9999px; display: grid; place-items: center; background: radial-gradient(closest-side, rgba(124,58,237,0.24), rgba(0,0,0,0) 70%); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 0 20px rgba(124,58,237,0.45), 0 0 14px rgba(46,144,255,0.18); }
-        .wave-bar { width: 6px; border-radius: 3px; background: linear-gradient(180deg, rgba(168,85,247,0.65), rgba(59,130,246,0.65)); box-shadow: 0 0 10px rgba(168,85,247,0.35); animation: wave 1.4s ease-in-out infinite; }
-        @keyframes wave { 0%, 100% { height: 10px; opacity: .6; } 50% { height: 44px; opacity: 1; } }
-        .progress-ring { position: relative; width: 120px; height: 120px; border-radius: 9999px; border: 2px dashed rgba(168,85,247,0.35); animation: spin 10s linear infinite; box-shadow: 0 0 16px rgba(59,130,246,0.2) inset; }
-        @keyframes spin { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
-      `}</style>
+    <div className="sticky top-3 z-40 mx-auto max-w-6xl px-4">
+      <div
+        id="safety-nav"
+        className="mx-auto flex items-center justify-between rounded-full border border-white/10 bg-white/[.06] px-3 py-2 backdrop-blur-xl"
+        style={{
+          boxShadow:
+            "inset 0 0 0 1px rgba(255,255,255,.06), 0 10px 30px rgba(0,0,0,.25)",
+        }}
+      >
+        <Link href="/" className="flex items-center gap-2 px-2 py-1">
+          <img src="/logo.png" alt="CallSubs" className="h-6 w-6 rounded-full" />
+          <span className="text-sm font-semibold text-white">CallSubs</span>
+        </Link>
 
-      {/* Soft glow background */}
-      <canvas
-        ref={particlesRef}
-        className="absolute inset-0 w-full h-full opacity-40 pointer-events-none"
-        aria-hidden="true"
-      />
+        <nav className="hidden md:flex items-center gap-6">
+          <Link href="/#features" className="text-sm text-white/80 hover:text-white">
+            Features
+          </Link>
+          <Link href="/#how-it-works" className="text-sm text-white/80 hover:text-white">
+            How it works
+          </Link>
+          <Link href="/#pricing" className="text-sm text-white/80 hover:text-white">
+            Pricing
+          </Link>
+          <Link href="/safety" className="text-sm text-white">
+            Safety
+          </Link>
+        </nav>
 
-      <main className="relative z-10 space-y-24 md:space-y-32">
-        {/* 🛡️ Hero Section */}
-        <section className="max-w-7xl mx-auto px-6 pt-24 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+        <div className="flex items-center gap-2">
+          <Link
+            href="/api/auth/signin"
+            className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-sm font-medium text-white hover:bg-white/15"
+          >
+            Sign in
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** ✅ Pill helper (this was missing) */
+function Pill({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[.06] px-3 py-2 text-sm text-white/85">
+      {children}
+    </div>
+  );
+}
+
+export default function SafetyPage() {
+  return (
+    <div className="min-h-screen bg-[#0b0b0d] text-white">
+      {/* Sticky header */}
+      <FloatingNav />
+
+      {/* Hero */}
+      <section className="relative mx-auto max-w-6xl px-4 pt-16 md:pt-20">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute right-[-12vw] top-[-6vw] h-[40vw] w-[40vw] rounded-full blur-3xl opacity-40"
+          style={{
+            background:
+              "radial-gradient(closest-side, rgba(124,58,237,.25), rgba(124,58,237,0) 70%)",
+          }}
+        />
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
           <div>
             <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
-              Built for Real Conversations.<br />
-              Protected by Real Technology.
+              Built for Real Conversations. Protected by Real Technology.
             </h1>
             <p className="mt-4 text-white/80">
-              Safety isn’t an add-on at CallSubs—it’s the foundation. Every call,
-              every feature, and every interaction is designed to keep you
-              protected while you stay in control.
+              Safety isn’t an add-on at CallSubs, it’s the foundation. Every
+              call, every feature, every user interaction is designed to keep
+              you protected while staying in control.
             </p>
+            <div className="mt-6">
+              <Link
+                href="/#waitlist"
+                className="inline-flex items-center rounded-xl bg-gradient-to-r from-fuchsia-600 to-indigo-600 px-4 py-2 text-sm font-semibold shadow-lg shadow-fuchsia-500/15"
+              >
+                Request Early Access
+              </Link>
+            </div>
           </div>
-          <div className="flex justify-center">
-            <div className="ring-wrap">
-              <div className="ring r1"></div>
-              <div className="ring r2"></div>
-              <div className="ring r3"></div>
-              <div className="ring r4"></div>
-              <div className="shield-core">
-                <Shield className="w-10 h-10 text-purple-400" />
+
+          {/* concentric rings illustration */}
+          <div className="relative">
+            <div className="absolute inset-0 -z-10 rounded-3xl bg-[radial-gradient(closest-side,rgba(168,85,247,.18),rgba(168,85,247,0)_70%)] blur-2xl" />
+            <div className="mx-auto mt-4 grid place-items-center">
+              <div className="relative h-64 w-64">
+                {[1, 2, 3, 4].map((i) => (
+                  <div
+                    key={i}
+                    className="absolute inset-0 rounded-full border border-fuchsia-400/30"
+                    style={{ transform: `scale(${0.4 + i * 0.15})` }}
+                  />
+                ))}
+                <div className="absolute inset-0 grid place-items-center">
+                  <div className="grid h-12 w-12 place-items-center rounded-full bg-white/10 ring-1 ring-white/15">
+                    <Shield className="h-6 w-6 text-white/90" />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* ✅ Verification Mockup */}
-        <section className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-          <div>
-            <h2 className="text-2xl md:text-3xl font-extrabold">Verified Identities</h2>
-            <p className="mt-4 text-white/80">
-              Phone verification ties one identity to one number. We track linked
-              accounts and propagate bans across identities to protect you from
-              repeat offenders.
+        {/* verification pills */}
+        <div className="relative mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="absolute inset-0 -z-10 rounded-3xl bg-[radial-gradient(closest-side,rgba(168,85,247,.2),rgba(168,85,247,0)_70%)] blur-2xl opacity-70" />
+          <Pill>
+            <Phone className="h-4 w-4" />
+            <span className="text-white/70">Viewer Phone</span>
+            <span className="ml-auto font-semibold">+1 •••• ••89</span>
+          </Pill>
+          <Pill>
+            <KeyRound className="h-4 w-4" />
+            <span className="text-white/70">OTP Code</span>
+            <span className="ml-auto font-semibold">123456</span>
+          </Pill>
+          <Pill>
+            <CheckCircle2 className="h-4 w-4 text-emerald-300" />
+            <span className="text-white/70">Verified</span>
+            <span className="ml-auto font-semibold text-emerald-300">Success</span>
+          </Pill>
+        </div>
+      </section>
+
+      {/* Live Transcription + copy + Hotkey */}
+      <section className="relative mx-auto max-w-6xl px-4 py-16">
+        <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-2">
+          {/* Live transcription mock */}
+          <div className="relative rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-lg">
+            <div className="absolute inset-0 -z-10 rounded-2xl bg-[radial-gradient(closest-side,rgba(168,85,247,.18),rgba(168,85,247,0)_70%)] blur-2xl opacity-60" />
+            <div className="flex items-center gap-2 text-sm text-white/80">
+              <Lock className="h-4 w-4" />
+              Live Transcription
+              <Sparkles className="ml-auto h-4 w-4 text-fuchsia-300" />
+            </div>
+            <div className="mt-6 grid grid-cols-24 items-end gap-1">
+              {Array.from({ length: 24 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="w-full rounded-full bg-gradient-to-t from-fuchsia-400/40 to-indigo-400/40"
+                  style={{ height: `${20 + ((i * 7) % 40)}px` }}
+                />
+              ))}
+            </div>
+            <p className="mt-4 text-xs text-white/70">
+              AI flags slurs, harassment, and risk in real-time.
             </p>
           </div>
-          <div className="relative rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur">
-            <KV label="Viewer Phone" value="+1 •••• 89" />
-            <KV label="OTP Code" value="123456" />
-            <KV label="Verified" value="Success" valueClass="text-emerald-400" />
-          </div>
-        </section>
 
-        {/* 🗣️ Live Transcription */}
-        <section className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-          <div className="relative rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur">
-            <div className="flex items-center gap-2 text-sm text-white/85">
-              <Lock className="w-4 h-4 text-purple-300" />
-              <span>Live Transcription</span>
-            </div>
-            <Waveform />
-          </div>
           <div>
-            <h2 className="text-2xl md:text-3xl font-extrabold">AI That Listens</h2>
-            <p className="mt-4 text-white/80">
-              Real-time transcription analyzes conversations as they happen—detecting
-              harassment and risky behavior.
+            <h2 className="text-3xl font-extrabold">
+              AI That Listens So You Don’t Have To.
+            </h2>
+            <p className="mt-3 text-white/80">
+              Real-time transcription analyzes conversations as they happen,
+              detecting harassment and risky behavior. Calls are automatically
+              flagged, helping you moderate without breaking flow.
             </p>
-          </div>
-        </section>
 
-        {/* 🧰 Streamer Tools / Trust Monitor */}
-        <TrustMonitor />
-
-        {/* 🔒 Private by Default */}
-        <section className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur">
-            <div className="flex items-center gap-2 text-sm text-white/85 mb-3">
-              <Lock className="w-4 h-4 text-purple-300" />
-              <span className="font-semibold">Private by Default</span>
+            {/* Hotkey card */}
+            <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-lg">
+              <div className="flex items-center gap-2 text-sm text-white/80">
+                <Keyboard className="h-4 w-4" />
+                Hotkey Configuration
+              </div>
+              <div className="mt-4 flex items-center gap-2">
+                <span className="rounded-md border border-white/15 bg-white/10 px-2 py-1 text-sm">
+                  Ctrl
+                </span>
+                <span className="rounded-md border border-white/15 bg-white/10 px-2 py-1 text-sm">
+                  M
+                </span>
+                <span className="ml-2 text-sm text-white/70">
+                  Press to instantly mute viewer audio.
+                </span>
+              </div>
+              <div className="mt-4 flex gap-3">
+                <button className="rounded-lg bg-fuchsia-600 px-3 py-1.5 text-sm font-semibold">
+                  Panic Mute
+                </button>
+                <button className="rounded-lg border border-white/15 bg-white/10 px-3 py-1.5 text-sm">
+                  One-click Ban
+                </button>
+              </div>
             </div>
-            <ul className="text-sm text-white/80 space-y-2">
-              <li>• Encrypted data with strict access controls</li>
-              <li>• GDPR-aligned user protections</li>
-              <li>• Masked phone digits by default</li>
-              <li>• Transparent unban history</li>
+          </div>
+        </div>
+      </section>
+
+      {/* Trust monitor row */}
+      <TrustMonitor />
+
+      {/* Private by Default + copy */}
+      <section className="relative mx-auto grid max-w-6xl grid-cols-1 items-start gap-10 px-4 py-16 md:grid-cols-2">
+        <div className="relative rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-lg">
+          <div className="absolute inset-0 -z-10 rounded-2xl bg-[radial-gradient(closest-side,rgba(168,85,247,.18),rgba(168,85,247,0)_70%)] blur-2xl opacity-60" />
+          <div className="flex items-center gap-2 text-sm font-semibold text-white">
+            <Lock className="h-4 w-4" />
+            Private by Default
+          </div>
+          <ul className="mt-4 space-y-2 text-sm text-white/80">
+            <li>• Encrypted data with strict access controls</li>
+            <li>• GDPR-aligned user protections</li>
+            <li>• Masked phone digits by default</li>
+            <li>• Transparent unban history</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="text-3xl font-extrabold">
+            Protected Connections. Private by Default.
+          </h3>
+          <p className="mt-3 text-white/80">
+            Your safety and privacy are core to the CallSubs platform. From
+            masked identifiers to transparent moderation history, we balance
+            protection with clarity.
+          </p>
+        </div>
+      </section>
+
+      {/* Always evolving + CTA */}
+      <section className="relative mx-auto max-w-6xl px-4 pb-20">
+        <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-[1.15fr_.85fr]">
+          <div>
+            <h3 className="text-3xl font-extrabold">
+              Always Evolving. Always Safer.
+            </h3>
+            <p className="mt-3 text-white/80">
+              We’re building the future of live safety with smart prevention and
+              better signals.
+            </p>
+            <ul className="mt-4 space-y-2 text-white/80">
+              <li>• Behavioral Pattern Detection</li>
+              <li>• Enhanced Trust Ratings</li>
+              <li>• Shared Ban Lists between creators</li>
             </ul>
           </div>
-          <div>
-            <h2 className="text-2xl md:text-3xl font-extrabold">
-              Protected Connections. Private by Default.
-            </h2>
+
+          <div className="relative h-48">
+            <div className="absolute inset-0 -z-10 rounded-full bg-[radial-gradient(closest-side,rgba(168,85,247,.2),rgba(168,85,247,0)_70%)] blur-2xl opacity-70" />
+            <div className="absolute inset-0 grid place-items-center">
+              <div className="relative h-40 w-40">
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="absolute inset-0 rounded-full border border-fuchsia-400/25"
+                    style={{ transform: `scale(${0.5 + i * 0.15})` }}
+                  />
+                ))}
+                <div className="absolute inset-0 grid place-items-center">
+                  <div className="h-10 w-10 rounded-full bg-white/10 ring-1 ring-white/15" />
+                </div>
+              </div>
+            </div>
           </div>
-        </section>
+        </div>
 
-        {/* 🚀 Always Evolving */}
-        <section className="max-w-7xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-extrabold">Always Evolving. Always Safer.</h2>
-          <p className="mt-4 text-white/80 max-w-2xl mx-auto">
-            We’re building the future of live safety with smart prevention and
-            stronger signals.
-          </p>
-          <ul className="mt-6 text-white/80 space-y-2 text-sm">
-            <li>• Behavioral Pattern Detection</li>
-            <li>• Enhanced Trust Ratings</li>
-            <li>• Shared Ban Lists between creators</li>
-          </ul>
-        </section>
+        <h3 className="mt-16 text-center text-3xl font-extrabold">
+          Your Stream. Your Rules. Our Protection.
+        </h3>
+        <p className="mt-2 text-center text-white/70">
+          Join the safest way to connect live.
+        </p>
+      </section>
 
-        {/* ✨ CTA */}
-        <section className="max-w-7xl mx-auto px-6 text-center pb-24">
-          <h2 className="text-4xl font-extrabold">Your Stream. Your Rules. Our Protection.</h2>
-          <p className="mt-3 text-white/80">Join the safest way to connect live.</p>
-          <button className="mt-6 inline-flex items-center rounded-xl px-6 py-3 font-semibold bg-white text-black hover:bg-white/90 transition">
-            Get Started
-          </button>
-        </section>
-      </main>
+      {/* Footer (use your PremiumFooter if you have it) */}
+      <footer className="border-t border-white/10 bg-black/60">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-4 py-10 md:grid-cols-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <img src="/logo.png" alt="CallSubs" className="h-7 w-7 rounded-full" />
+              <span className="text-lg font-semibold">CallSubs</span>
+            </div>
+            <p className="mt-3 text-sm text-white/70">
+              The safest way to connect with your fans live.
+            </p>
+          </div>
 
-      {/* Footer */}
-      <PremiumFooter />
-    </div>
-  );
-}
+          <div>
+            <div className="text-sm font-semibold">Quick Links</div>
+            <ul className="mt-3 space-y-2 text-sm text-white/80">
+              <li>
+                <Link href="/#features" className="hover:text-white">
+                  Features
+                </Link>
+              </li>
+              <li>
+                <Link href="/safety" className="hover:text-white">
+                  Safety
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="hover:text-white">
+                  Terms of Service
+                </Link>
+              </li>
+            </ul>
+          </div>
 
-/* --------------------------- UI helpers --------------------------- */
+          <div>
+            <div className="text-sm font-semibold">Resources</div>
+            <ul className="mt-3 space-y-2 text-sm text-white/80">
+              <li>
+                <Link href="/faq" className="hover:text-white">
+                  FAQs
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy" className="hover:text-white">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:text-white">
+                  Contact
+                </Link>
+              </li>
+            </ul>
+          </div>
 
-function KV({
-  label,
-  value,
-  valueClass = "",
-}: {
-  label: string;
-  value: string;
-  valueClass?: string;
-}) {
-  return (
-    <div className="grid grid-cols-2 gap-4 rounded-xl bg-white/5 border border-white/10 px-4 py-3 mb-3">
-      <span className="text-sm text-white/60">{label}</span>
-      <span className={`text-sm text-right ${valueClass}`}>{value}</span>
-    </div>
-  );
-}
-
-function Waveform() {
-  const bars = Array.from({ length: 36 }, (_, i) => (i % 5) * 8 + 18);
-  return (
-    <div className="mt-4 h-24 rounded-lg bg-gradient-to-r from-purple-500/20 to-indigo-500/20 p-2 flex items-end gap-1 border border-white/10">
-      {bars.map((h, i) => (
-        <div
-          key={i}
-          className="w-1.5 rounded-full bg-purple-400/80"
-          style={{ height: `${h}px` }}
-        />
-      ))}
+          <div>
+            <div className="text-sm font-semibold">Stay Updated</div>
+            <form className="mt-3 flex gap-2">
+              <input
+                type="email"
+                placeholder="your@email.com"
+                className="w-full rounded-lg border border-white/15 bg-white/10 px-3 py-2 text-sm outline-none placeholder:text-white/50"
+              />
+              <button
+                type="submit"
+                className="rounded-lg bg-gradient-to-r from-fuchsia-600 to-indigo-600 px-3 py-2 text-sm font-semibold"
+              >
+                Sign Up
+              </button>
+            </form>
+          </div>
+        </div>
+        <div className="border-t border-white/10 py-4 text-center text-xs text-white/60">
+          © {new Date().getFullYear()} CallSubs. All rights reserved.
+        </div>
+      </footer>
     </div>
   );
 }
