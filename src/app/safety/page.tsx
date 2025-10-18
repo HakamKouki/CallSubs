@@ -70,7 +70,7 @@ function FloatingNav() {
   );
 }
 
-/** ✅ Pill helper (this was missing) */
+/** ✅ Pill helper */
 function Pill({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[.06] px-3 py-2 text-sm text-white/85">
@@ -85,7 +85,7 @@ export default function SafetyPage() {
       {/* Sticky header */}
       <FloatingNav />
 
-      {/* Hero */}
+      {/* Hero Section */}
       <section className="relative mx-auto max-w-6xl px-4 pt-16 md:pt-20">
         <div
           aria-hidden="true"
@@ -136,10 +136,22 @@ export default function SafetyPage() {
             </div>
           </div>
         </div>
+      </section>
 
-        {/* verification pills */}
-        <div className="relative mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
-          <div className="absolute inset-0 -z-10 rounded-3xl bg-[radial-gradient(closest-side,rgba(168,85,247,.2),rgba(168,85,247,0)_70%)] blur-2xl opacity-70" />
+      {/* Verification Section */}
+      <section className="relative mx-auto max-w-6xl px-4 py-16 grid grid-cols-1 gap-8 md:grid-cols-2">
+        <div>
+          <h2 className="text-3xl font-extrabold">
+            Verified Identities, Real Accountability.
+          </h2>
+          <p className="mt-3 text-white/80">
+            Phone verification ties one identity to one number. We track linked
+            accounts and propagate bans across identities to protect you from
+            repeat offenders.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <Pill>
             <Phone className="h-4 w-4" />
             <span className="text-white/70">Viewer Phone</span>
@@ -299,7 +311,7 @@ export default function SafetyPage() {
         </p>
       </section>
 
-      {/* Footer (use your PremiumFooter if you have it) */}
+      {/* Footer */}
       <footer className="border-t border-white/10 bg-black/60">
         <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-4 py-10 md:grid-cols-4">
           <div>
