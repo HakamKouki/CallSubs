@@ -8,6 +8,7 @@ import WaitingRoom from '@/components/WaitingRoom';
 import ActiveCallSimple from '@/components/ActiveCallSimple';
 import CallCompleted from '@/components/CallCompleted';
 import Image from 'next/image';
+import Leaderboard from '@/components/Leaderboard';
 
 interface StreamerData {
   username: string;
@@ -422,6 +423,9 @@ export default function CallRequestPage() {
                 </div>
               </div>
             </div>
+            
+            <Leaderboard streamerUsername={username} />
+
           </div>
 
           {/* Right Column - Request Call */}

@@ -33,6 +33,10 @@ export async function POST(request: NextRequest) {
     console.log('Metadata:', session.metadata);
 
     const callRequestId = session.metadata?.call_request_id;
+    const viewerUsername = session.metadata?.viewer_username;
+    const streamerUsername = session.metadata?.streamer_username;
+    const duration = parseInt(session.metadata?.duration || '0');
+    const amount = session.amount_total ? session.amount_total / 100 : 0; // Convert cents to dollars
 
     if (callRequestId) {
       // Update call request to pending (ready for streamer to accept)
@@ -44,6 +48,24 @@ export async function POST(request: NextRequest) {
       );
 
       console.log('Call request', callRequestId, 'updated to pending');
+
+      // Update leaderboard stats
+      if (viewerUsername && streamerUsername) {
+        await pool.query(
+          `INSERT INTO caller_stats (viewer_username, streamer_username, total_calls, total_spent, total_minutes, last_call_at)
+           VALUES ($1, $2, 1, $3, $4, CURRENT_TIMESTAMP)
+           ON CONFLICT (viewer_username, streamer_username)
+           DO UPDATE SET
+             total_calls = caller_stats.total_calls + 1,
+             total_spent = caller_stats.total_spent + $3,
+             total_minutes = caller_stats.total_minutes + $4,
+             last_call_at = CURRENT_TIMESTAMP,
+             updated_at = CURRENT_TIMESTAMP`,
+          [viewerUsername.toLowerCase(), streamerUsername.toLowerCase(), amount, Math.floor(duration / 60)]
+        );
+
+        console.log('Leaderboard stats updated for', viewerUsername);
+      }
     }
   }
 
