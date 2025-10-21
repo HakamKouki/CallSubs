@@ -3,10 +3,11 @@
 import { useParams, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useSession, signIn, signOut } from 'next-auth/react';
-import { Phone, Clock, DollarSign, Shield, Check, User, Loader2, AlertCircle, Crown, FileText, CheckSquare } from 'lucide-react';
+import { Phone, Clock, DollarSign, Shield, Check, User, Loader2, AlertCircle, Crown, FileText, CheckSquare, Sparkles, Zap } from 'lucide-react';
 import WaitingRoom from '@/components/WaitingRoom';
 import ActiveCallSimple from '@/components/ActiveCallSimple';
 import CallCompleted from '@/components/CallCompleted';
+import Image from 'next/image';
 
 interface StreamerData {
   username: string;
@@ -115,7 +116,6 @@ export default function CallRequestPage() {
       return;
     }
 
-    // Check if rules agreement is required and not yet agreed
     if (streamerData?.requireRulesAgreement && !rulesAgreed) {
       setError('You must agree to the call rules before proceeding');
       return;
@@ -185,10 +185,10 @@ export default function CallRequestPage() {
 
   const getTierBadgeColor = (tier: string) => {
     switch(tier) {
-      case 'tier1': return 'bg-blue-100 text-blue-700';
-      case 'tier2': return 'bg-purple-100 text-purple-700';
-      case 'tier3': return 'bg-yellow-100 text-yellow-700';
-      default: return 'bg-blue-100 text-blue-700';
+      case 'tier1': return 'bg-blue-500/20 text-blue-400 border border-blue-500/30';
+      case 'tier2': return 'bg-purple-500/20 text-purple-400 border border-purple-500/30';
+      case 'tier3': return 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30';
+      default: return 'bg-blue-500/20 text-blue-400 border border-blue-500/30';
     }
   };
 
@@ -226,10 +226,10 @@ export default function CallRequestPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <p className="mt-4 text-gray-400">Loading...</p>
         </div>
       </div>
     );
@@ -237,9 +237,10 @@ export default function CallRequestPage() {
 
   if (error && !streamerData) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
         <div className="text-center">
-          <p className="text-xl text-gray-900 font-semibold">{error}</p>
+          <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
+          <p className="text-xl text-white font-semibold">{error}</p>
         </div>
       </div>
     );
@@ -250,34 +251,53 @@ export default function CallRequestPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white">
-      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center">
-              <span className="text-white font-bold text-sm">CS</span>
+    <div className="min-h-screen bg-[#0a0a0a] relative overflow-hidden">
+      {/* Animated Background Gradients */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+      </div>
+
+      {/* Premium Header with CallSubs Branding */}
+      <header className="relative border-b border-gray-800/50 bg-[#1a1a1a]/80 backdrop-blur-xl sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-purple-700 flex items-center justify-center shadow-lg shadow-purple-600/50 p-2">
+                <Image 
+                  src="/logo.svg" 
+                  alt="CallSubs" 
+                  width={24} 
+                  height={24}
+                  className="w-full h-full"
+                />
+              </div>
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-[#1a1a1a] animate-pulse"></div>
             </div>
-            <span className="font-semibold text-gray-900">CallSubs</span>
+            <div>
+              <span className="font-bold text-white text-lg">CallSubs</span>
+              <p className="text-xs text-gray-400">Premium Creator Calls</p>
+            </div>
           </div>
           {session ? (
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 px-3 py-2 bg-white/5 border border-gray-800 rounded-lg">
                 {session.user?.image && (
-                  <img src={session.user.image} alt="User" className="w-8 h-8 rounded-full" />
+                  <img src={session.user.image} alt="User" className="w-6 h-6 rounded-full" />
                 )}
-                <span className="text-sm text-gray-700">{session.user?.name}</span>
+                <span className="text-sm text-gray-300">{session.user?.name}</span>
               </div>
               <button
                 onClick={() => signOut({ callbackUrl: `/call/${username}` })}
-                className="text-sm text-red-600 hover:text-red-700 font-medium"
+                className="text-sm text-red-400 hover:text-red-300 font-medium transition-colors"
               >
-                Log out
+                Sign out
               </button>
             </div>
           ) : (
             <button
               onClick={() => signIn('twitch', { callbackUrl: `/call/${username}` })}
-              className="text-sm text-purple-600 hover:text-purple-700 font-medium"
+              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all font-medium shadow-lg shadow-purple-600/30"
             >
               Sign in
             </button>
@@ -285,192 +305,219 @@ export default function CallRequestPage() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-8 md:py-12">
+      <main className="relative max-w-6xl mx-auto px-4 py-8 md:py-12">
         <div className="grid md:grid-cols-2 gap-8 items-start">
-          <div>
-            <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-              <div className="flex items-center gap-4 mb-6">
-                <img 
-                  src={streamerData.profileImage} 
-                  alt={streamerData.displayName}
-                  className="w-20 h-20 rounded-full border-4 border-purple-100"
-                />
-                <div>
-                  <h1 className="text-2xl font-bold text-gray-900">{streamerData.displayName}</h1>
-                  <div className="flex items-center gap-2 mt-1">
+          {/* Left Column - Streamer Info */}
+          <div className="space-y-6">
+            {/* Streamer Card with Premium Design */}
+            <div className="bg-[#1a1a1a] rounded-2xl shadow-2xl p-6 border border-gray-800/50 relative overflow-hidden group hover:border-purple-500/30 transition-all">
+              {/* Gradient Border Effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-transparent to-blue-600/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              
+              <div className="relative">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="relative">
+                    <img 
+                      src={streamerData.profileImage} 
+                      alt={streamerData.displayName}
+                      className="w-20 h-20 rounded-full border-4 border-purple-500/30 shadow-lg"
+                    />
                     {streamerData.isLive && (
-                      <span className="flex items-center gap-1 text-xs font-medium text-red-600">
-                        <span className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></span>
+                      <div className="absolute -bottom-1 -right-1 px-2 py-0.5 bg-red-500 rounded-full text-xs font-bold text-white shadow-lg flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
                         LIVE
-                      </span>
+                      </div>
                     )}
-                    <span className="text-sm text-gray-500">@{streamerData.username}</span>
+                  </div>
+                  <div className="flex-1">
+                    <h1 className="text-2xl font-bold text-white mb-1">{streamerData.displayName}</h1>
+                    <p className="text-sm text-gray-400">@{streamerData.username}</p>
+                    {streamerData.isAcceptingCalls && (
+                      <div className="mt-2 inline-flex items-center gap-1 px-2 py-1 bg-green-500/20 border border-green-500/30 rounded-full text-xs text-green-400 font-medium">
+                        <Zap className="w-3 h-3" />
+                        Available Now
+                      </div>
+                    )}
                   </div>
                 </div>
-              </div>
 
-              <div className="space-y-3">
-                <div className="flex items-center justify-between py-3 border-b">
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <DollarSign className="w-5 h-5" />
-                    <span className="text-sm font-medium">Call Price</span>
+                <div className="space-y-3">
+                  {/* Call Details */}
+                  <div className="flex items-center justify-between py-3 border-b border-gray-800">
+                    <div className="flex items-center gap-2 text-gray-400">
+                      <DollarSign className="w-5 h-5 text-green-400" />
+                      <span className="text-sm font-medium">Call Price</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl font-bold text-white">${streamerData.callPrice.toFixed(2)}</span>
+                      <Sparkles className="w-4 h-4 text-purple-400" />
+                    </div>
                   </div>
-                  <span className="text-lg font-bold text-gray-900">${streamerData.callPrice.toFixed(2)}</span>
-                </div>
 
-                <div className="flex items-center justify-between py-3 border-b">
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <Clock className="w-5 h-5" />
-                    <span className="text-sm font-medium">Duration</span>
+                  <div className="flex items-center justify-between py-3 border-b border-gray-800">
+                    <div className="flex items-center gap-2 text-gray-400">
+                      <Clock className="w-5 h-5 text-blue-400" />
+                      <span className="text-sm font-medium">Duration</span>
+                    </div>
+                    <span className="text-lg font-bold text-white">{Math.floor(streamerData.callDuration / 60)} min {streamerData.callDuration % 60} sec</span>
                   </div>
-                  <span className="text-lg font-bold text-gray-900">{Math.floor(streamerData.callDuration / 60)} min {streamerData.callDuration % 60} sec</span>
-                </div>
 
-                <div className="flex items-center justify-between py-3 border-b">
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <Crown className="w-5 h-5" />
-                    <span className="text-sm font-medium">Required Tier</span>
+                  <div className="flex items-center justify-between py-3 border-b border-gray-800">
+                    <div className="flex items-center gap-2 text-gray-400">
+                      <Crown className="w-5 h-5 text-yellow-400" />
+                      <span className="text-sm font-medium">Required Tier</span>
+                    </div>
+                    <span className={`text-xs font-semibold px-3 py-1 rounded-full ${getTierBadgeColor(streamerData.minSubTier || 'tier1')}`}>
+                      {getTierLabel(streamerData.minSubTier || 'tier1')}
+                    </span>
                   </div>
-                  <span className={`text-xs font-semibold px-2 py-1 rounded ${getTierBadgeColor(streamerData.minSubTier || 'tier1')}`}>
-                    {getTierLabel(streamerData.minSubTier || 'tier1')}
-                  </span>
-                </div>
 
-                <div className="flex items-center justify-between py-3">
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <Shield className="w-5 h-5" />
-                    <span className="text-sm font-medium">Status</span>
+                  <div className="flex items-center justify-between py-3">
+                    <div className="flex items-center gap-2 text-gray-400">
+                      <Shield className="w-5 h-5 text-purple-400" />
+                      <span className="text-sm font-medium">Status</span>
+                    </div>
+                    <span className={`text-sm font-medium ${streamerData.isAcceptingCalls ? 'text-green-400' : 'text-red-400'}`}>
+                      {streamerData.isAcceptingCalls ? 'Accepting Calls' : 'Not Accepting'}
+                    </span>
                   </div>
-                  <span className={`text-sm font-medium ${streamerData.isAcceptingCalls ? 'text-green-600' : 'text-red-600'}`}>
-                    {streamerData.isAcceptingCalls ? 'Accepting Calls' : 'Not Accepting'}
-                  </span>
                 </div>
               </div>
             </div>
 
-            {/* Call Rules Section */}
+            {/* Call Rules Card */}
             {streamerData.callRules && (
-              <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
+              <div className="bg-[#1a1a1a] rounded-2xl shadow-xl p-6 border border-gray-800/50">
                 <div className="flex items-center gap-2 mb-4">
-                  <FileText className="w-5 h-5 text-purple-600" />
-                  <h3 className="text-lg font-semibold text-gray-900">Call Rules</h3>
+                  <FileText className="w-5 h-5 text-purple-400" />
+                  <h3 className="text-lg font-semibold text-white">Call Rules</h3>
                 </div>
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
+                <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
+                  <p className="text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">
                     {streamerData.callRules}
                   </p>
                 </div>
               </div>
             )}
 
+            {/* Info Cards */}
             <div className="space-y-3">
-              <div className="bg-purple-50 rounded-lg p-4 text-sm">
-                <div className="flex items-start gap-2">
-                  <Shield className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
+              <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 text-sm">
+                <div className="flex items-start gap-3">
+                  <Shield className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-medium text-purple-900 mb-1">Subscriber Only</p>
-                    <p className="text-purple-700">You must be subscribed to request a call</p>
+                    <p className="font-medium text-white mb-1">Subscriber Only</p>
+                    <p className="text-gray-400">You must be subscribed to request a call</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-blue-50 rounded-lg p-4 text-sm">
-                <div className="flex items-start gap-2">
-                  <Phone className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+              <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 text-sm">
+                <div className="flex items-start gap-3">
+                  <Phone className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-medium text-blue-900 mb-1">Audio Only</p>
-                    <p className="text-blue-700">Calls are audio-only for your safety and privacy</p>
+                    <p className="font-medium text-white mb-1">Audio Only</p>
+                    <p className="text-gray-400">Calls are audio-only for your safety and privacy</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 sticky top-24">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Request a Call</h2>
+          {/* Right Column - Request Call */}
+          <div className="bg-[#1a1a1a] rounded-2xl shadow-2xl p-6 md:p-8 border border-gray-800/50 sticky top-24">
+            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+              <Phone className="w-6 h-6 text-purple-400" />
+              Request a Call
+            </h2>
 
+            {/* Status Messages */}
             {!session && (
-              <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <p className="text-sm text-yellow-800">
-                  <strong>Sign in required:</strong> You need to sign in with Twitch to request a call.
-                </p>
+              <div className="mb-6 bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium text-yellow-400">Sign in required</p>
+                    <p className="text-sm text-gray-400 mt-1">You need to sign in with Twitch to request a call</p>
+                  </div>
+                </div>
               </div>
             )}
 
             {session && checkingSubscription && (
-              <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p className="text-sm text-blue-800">
-                  <Loader2 className="w-4 h-4 inline animate-spin mr-2" />
+              <div className="mb-6 bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
+                <p className="text-sm text-blue-400 flex items-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" />
                   Checking your subscription status...
                 </p>
               </div>
             )}
 
             {session && subscriptionStatus && !subscriptionStatus.isSubscribed && (
-              <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
-                <div className="flex items-start gap-2">
-                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <div className="mb-6 bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-sm font-medium text-red-800">Not Subscribed</p>
-                    <p className="text-sm text-red-700 mt-1">{subscriptionStatus.message}</p>
+                    <p className="text-sm font-medium text-red-400">Not Subscribed</p>
+                    <p className="text-sm text-gray-400 mt-1">{subscriptionStatus.message}</p>
                   </div>
                 </div>
               </div>
             )}
 
             {session && subscriptionStatus && subscriptionStatus.isSubscribed && !subscriptionStatus.meetsRequirement && (
-              <div className="mb-6 bg-orange-50 border border-orange-200 rounded-lg p-4">
-                <div className="flex items-start gap-2">
-                  <AlertCircle className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
+              <div className="mb-6 bg-orange-500/10 border border-orange-500/30 rounded-xl p-4">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-orange-400 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-sm font-medium text-orange-800">Tier Requirement Not Met</p>
-                    <p className="text-sm text-orange-700 mt-1">{subscriptionStatus.message}</p>
+                    <p className="text-sm font-medium text-orange-400">Tier Requirement Not Met</p>
+                    <p className="text-sm text-gray-400 mt-1">{subscriptionStatus.message}</p>
                   </div>
                 </div>
               </div>
             )}
 
             {session && subscriptionStatus && subscriptionStatus.meetsRequirement && (
-              <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
-                <div className="flex items-start gap-2">
-                  <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <div className="mb-6 bg-green-500/10 border border-green-500/30 rounded-xl p-4">
+                <div className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-sm font-medium text-green-800">Eligible to Call!</p>
-                    <p className="text-sm text-green-700 mt-1">{subscriptionStatus.message}</p>
+                    <p className="text-sm font-medium text-green-400">Eligible to Call!</p>
+                    <p className="text-sm text-gray-400 mt-1">{subscriptionStatus.message}</p>
                   </div>
                 </div>
               </div>
             )}
 
             {error && (
-              <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
-                <p className="text-sm text-red-800">{error}</p>
+              <div className="mb-6 bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+                <p className="text-sm text-red-400">{error}</p>
               </div>
             )}
 
             {!streamerData.isAcceptingCalls && (
-              <div className="mb-6 bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <p className="text-sm text-gray-700">
+              <div className="mb-6 bg-gray-700/30 border border-gray-700 rounded-xl p-4">
+                <p className="text-sm text-gray-300">
                   <strong>{streamerData.displayName}</strong> is not currently accepting calls. Check back later!
                 </p>
               </div>
             )}
 
-            {/* Rules Agreement Checkbox */}
+            {/* Rules Agreement */}
             {streamerData.callRules && streamerData.requireRulesAgreement && session && subscriptionStatus?.meetsRequirement && (
-              <div className="mb-6 bg-purple-50 border border-purple-200 rounded-lg p-4">
-                <label className="flex items-start gap-3 cursor-pointer">
+              <div className="mb-6 bg-purple-500/10 border border-purple-500/30 rounded-xl p-4">
+                <label className="flex items-start gap-3 cursor-pointer group">
                   <input
                     type="checkbox"
                     checked={rulesAgreed}
                     onChange={(e) => setRulesAgreed(e.target.checked)}
-                    className="mt-1 w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+                    className="mt-1 w-4 h-4 text-purple-600 bg-black border-gray-700 rounded focus:ring-purple-500 focus:ring-2"
                   />
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-sm font-medium text-white group-hover:text-purple-400 transition-colors">
                       I have read and agree to follow the call rules
                     </p>
-                    <p className="text-xs text-gray-600 mt-1">
+                    <p className="text-xs text-gray-400 mt-1">
                       You must agree to the rules before proceeding to payment
                     </p>
                   </div>
@@ -478,26 +525,34 @@ export default function CallRequestPage() {
               </div>
             )}
 
+            {/* User Info & Price */}
             <div className="space-y-4 mb-6">
-              <div className="bg-gray-50 rounded-lg p-4">
+              <div className="bg-black/40 border border-gray-800 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <User className="w-4 h-4 text-gray-600" />
-                  <span className="text-sm font-medium text-gray-700">Your Information</span>
+                  <User className="w-4 h-4 text-gray-400" />
+                  <span className="text-sm font-medium text-gray-300">Your Information</span>
                 </div>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-400">
                   {session ? `Signed in as ${session.user?.name}` : 'Not signed in'}
                 </p>
               </div>
 
-              <div className="bg-purple-50 rounded-lg p-4 border-2 border-purple-200">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-700">Total Amount</span>
-                  <span className="text-2xl font-bold text-purple-600">${streamerData.callPrice.toFixed(2)}</span>
+              <div className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-xl p-4 border-2 border-purple-500/30 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-purple-600/10 rounded-full blur-2xl"></div>
+                <div className="relative">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-300">Total Amount</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-3xl font-bold text-white">${streamerData.callPrice.toFixed(2)}</span>
+                      <Sparkles className="w-5 h-5 text-purple-400" />
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-400">For a {Math.floor(streamerData.callDuration / 60)}-minute premium call</p>
                 </div>
-                <p className="text-xs text-gray-600">For a {Math.floor(streamerData.callDuration / 60)}-minute call</p>
               </div>
             </div>
 
+            {/* CTA Button */}
             <button
               onClick={handleRequestCall}
               disabled={
@@ -508,7 +563,7 @@ export default function CallRequestPage() {
                 !subscriptionStatus?.meetsRequirement ||
                 (streamerData.requireRulesAgreement && !rulesAgreed)
               }
-              className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-semibold disabled:bg-gray-300 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl hover:from-purple-700 hover:to-purple-800 transition-all font-bold text-lg disabled:from-gray-700 disabled:to-gray-800 disabled:cursor-not-allowed shadow-lg shadow-purple-600/30 hover:shadow-purple-600/50 hover:scale-[1.02] active:scale-[0.98] group"
             >
               {isSubmitting ? (
                 <>
@@ -517,15 +572,31 @@ export default function CallRequestPage() {
                 </>
               ) : (
                 <>
-                  <Phone className="w-5 h-5" />
-                  {session ? 'Request Call' : 'Sign in to Request'}
+                  <Phone className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                  {session ? 'Request Call Now' : 'Sign in to Request'}
                 </>
               )}
             </button>
 
             <p className="mt-4 text-xs text-center text-gray-500">
-              By requesting a call, you agree to our Terms of Service
+              Secured by <span className="text-purple-400 font-medium">CallSubs</span> • Safe & Private
             </p>
+          </div>
+        </div>
+
+        {/* Footer Branding */}
+        <div className="mt-16 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#1a1a1a] border border-gray-800 rounded-full">
+            <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-purple-600 to-purple-700 flex items-center justify-center p-1">
+              <Image 
+                src="/logo.svg" 
+                alt="CallSubs" 
+                width={12} 
+                height={12}
+                className="w-full h-full"
+              />
+            </div>
+            <span className="text-sm text-gray-400">Powered by <span className="text-white font-semibold">CallSubs</span></span>
           </div>
         </div>
       </main>
